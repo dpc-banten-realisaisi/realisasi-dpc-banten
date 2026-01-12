@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Data Realisasi - FINAL VERSION</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS STYLES -->
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #ff9800;
+            --bg-color: #f4f6f9;
+            --text-color: #333;
+            --header-height: 70px;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --white: #ffffff;
+            --gray-light: #e9ecef;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        .hidden { display: none !important; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-4 { gap: 1rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .p-4 { padding: 1rem; }
+        .text-center { text-align: center; }
+        .w-full { width: 100%; }
+        .text-muted { color: #888; }
+        .no-print { display: block; }
+        
+        .card { background: var(--white); padding: 1.5rem; border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 1rem; border: 1px solid #eee; }
+        .border-bottom { border-bottom: 1px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; }
+        .border-top { border-top: 1px solid #eee; }
+
+        .btn { padding: 0.6rem 1.2rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; font-size: 0.9rem; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: #004494; }
+        .btn-secondary { background-color: var(--secondary-color); color: white; }
+        .btn-secondary:hover { background-color: #e68900; }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-danger:hover { background-color: #b02a37; }
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-info { background-color: var(--info); color: white; }
+        .btn-info:hover { background-color: #138496; }
+        .btn-outline { background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); }
+        .btn-outline:hover { background: var(--primary-color); color: white; }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; background-color: #ccc; color: #fff; }
+
+        input, select, textarea { width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 0.5rem; font-size: 0.95rem; background: white; }
+        input:focus, select:focus { outline: 2px solid var(--secondary-color); border-color: transparent; }
+        label { font-weight: 600; margin-bottom: 0.2rem; display: block; font-size: 0.9rem; color: #555; }
+
+        #login-page { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary-color), #003366); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .login-card { background: white; width: 100%; max-width: 400px; padding: 2.5rem; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
+        .login-header h2 { color: var(--primary-color); margin-bottom: 0.5rem; }
+        .login-header p { color: #666; margin-bottom: 2rem; }
+
+        #main-app { display: flex; flex-direction: column; height: 100vh; }
+        header { background: var(--white); height: var(--header-height); border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; }
+        .header-brand h1 { font-size: 1.1rem; color: var(--primary-color); line-height: 1.2; font-weight: 700; }
+        .header-brand small { color: #666; font-size: 0.8rem; display: block; }
+        .user-profile { display: flex; align-items: center; gap: 1rem; }
+        .user-avatar { width: 40px; height: 40px; background: var(--secondary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
+
+        nav { background: var(--primary-color); padding: 0 1rem; flex-shrink: 0; }
+        .nav-tabs { display: flex; list-style: none; overflow-x: auto; }
+        .nav-item { margin-right: 0.5rem; white-space: nowrap; }
+        .nav-link { color: rgba(255,255,255,0.7); text-decoration: none; display: flex; align-items: center; padding: 1rem 1.5rem; height: 100%; border-bottom: 4px solid transparent; font-weight: 500; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
+        .nav-link:hover { color: white; background: rgba(255,255,255,0.1); }
+        .nav-link.active { color: white; border-bottom-color: var(--secondary-color); background: rgba(255,255,255,0.1); }
+
+        main { flex: 1; overflow-y: auto; padding: 2rem; position: relative; background: var(--bg-color); }
+        .section-view { display: none; animation: fadeIn 0.3s ease; }
+        .section-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { display: flex; align-items: center; padding: 1.5rem; border-radius: 8px; color: white; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+        .stat-card::after { content:''; position: absolute; right: -10px; bottom: -10px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+        .stat-card.blue { background: linear-gradient(45deg, #0056b3, #007bff); }
+        .stat-card.green { background: linear-gradient(45deg, #28a745, #20c997); }
+        .stat-card.orange { background: linear-gradient(45deg, #ff9800, #ffc107); }
+        .stat-card.purple { background: linear-gradient(45deg, #6f42c1, #e83e8c); }
+        .stat-icon { font-size: 2.5rem; opacity: 0.9; margin-right: 1.5rem; width: 50px; text-align: center; }
+        .stat-info h3 { font-size: 2rem; margin-bottom: 0; line-height: 1; }
+        .stat-info p { font-size: 0.9rem; opacity: 0.9; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .search-panel { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 1.5rem; border: 1px solid #eee; }
+        .search-panel h4 { margin-bottom: 1rem; color: var(--primary-color); border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+        .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+        .action-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; }
+
+        .table-container { background: white; border-radius: 8px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 1.5rem; }
+        .table-responsive { overflow-x: auto; width: 100%; }
+        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+        .thead { background: #f8f9fa; border-bottom: 2px solid #dee2e6; }
+        th, td { padding: 0.8rem 1rem; text-align: left; font-size: 0.9rem; border-bottom: 1px solid #eee; white-space: nowrap; }
+        th { font-weight: 600; color: #495057; text-transform: uppercase; font-size: 0.8rem; }
+        tr:hover { background-color: #f8f9fa; }
+        .action-buttons { display: flex; gap: 5px; }
+        
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+        .user-card, .pt-card { background: white; padding: 1.5rem; border-radius: 8px; border-left: 5px solid var(--primary-color); box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+        .pt-card { border-left-color: var(--secondary-color); }
+        .card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .card-avatar { width: 50px; height: 50px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #666; }
+        .card-body small { color: #777; display: block; margin-bottom: 0.2rem; }
+        .card-actions { margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: flex-end; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+        .modal { background: white; padding: 2rem; border-radius: 8px; width: 90%; max-width: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: slideDown 0.3s ease; max-height: 90vh; overflow-y: auto; }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 3000; }
+        .toast { background: white; padding: 1rem 1.5rem; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 10px; border-left: 4px solid var(--primary-color); display: flex; align-items: center; justify-content: space-between; min-width: 300px; animation: slideIn 0.3s; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.info { border-left-color: var(--info); }
+        .toast.warning { border-left-color: var(--danger); background: #fff3cd; }
+
+        .realisasi-summary-bar {
+            background-color: var(--primary-color); 
+            color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+            font-weight: bold;
+            flex-wrap: wrap; 
+        }
+
+        .summary-item {
+            display: flex;
+            gap:5px;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .summary-label {
+            opacity: 0.9;
+            font-weight: normal;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .summary-value {
+            font-weight: 800; 
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+        }
+
+        #summary-realisasi-table {
+            width: 100%;
+            border: 1px solid #dee2e6;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            table-layout: auto;
+        }
+
+        #summary-realisasi-table th, #summary-realisasi-table td {
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        #summary-realisasi-tablead th {
+            background-color: var(--primary-color) !important; 
+            color: #ffffff !important; 
+            font-weight: bold !important; 
+            text-transform: uppercase;
+            -webkit-print-color-adjust: exact;
+        }
+
+        #search-result-table th {
+            background-color: #0056b3 !important; 
+            color: #ffffff !important;
+            font-weight: bold !important;
+            text-transform: uppercase;
+            text-align: center !important;
+            border-bottom: 2px solid #004494 !important;
+        }
+
+        /* CSS UNTUK HIGHLIGHT ANOMALY DATA */
+        .data-anomaly {
+            color: #dc3545 !important; /* Merah Text */
+            font-weight: bold !important;
+            background-color: #ffebee !important; /* Background Merah Muda */
+            border: 1px solid #f5c6cb !important;
+            position: relative;
+        }
+        
+        /* CSS UNTUK DISPLAY (ADMIN/STAF) - GREEN & RED CHECKMARK */
+        .display-val-green {
+            color: #006400 !important; /* Deep Green */
+            font-weight: bold !important;
+            background-color: #e8f5e9 !important; /* Light Green BG */
+        }
+
+        .display-val-red {
+            color: #dc3545 !important; /* Deep Red */
+            font-weight: bold !important;
+            background-color: #ffebee !important; /* Light Red BG */
+        }
+
+        @media print {
+            @page { margin: 0 !important; size: A4 landscape; }
+            body { background: white; height: auto; overflow: visible; font-size: 9pt; color: black; -webkit-print-color-adjust: exact; print-color-adjust: exact; width: 100%; }
+            header, nav, .search-panel, .pagination, .action-bar, .btn-section, #toast-container, .no-print, .stats-grid, .modern-stats-grid { display: none !important; }
+            main { padding: 0; margin: 0; overflow: visible; display: block !important; }
+            .section-view { display: none !important; }
+            .section-view.active { display: block !important; }
+            .card, .table-container { box-shadow: none; border: none; padding: 0; margin: 0; }
+            .table-responsive { overflow: visible !important; width: 100%; } 
+            .print-only { display: block !important; margin-bottom: 10px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+            #print-header { width: 100%; margin-bottom: 10px; }
+            #print-title-main { font-size: 14pt; margin: 0 0 10px 0; text-transform: uppercase; color: #000; font-weight: bold; text-align: center !important; width: 100%; }
+            #print-meta-real-bottom { display: none !important; width: 100%; font-size: 8pt; line-height: 1.4; margin-bottom: 5px; padding-top: 5px; border-top: 1px dotted #ccc; }
+            .print-meta-grid { display: grid; grid-template-columns: 80px 1fr 80px 1fr; gap: 5px; margin-bottom: 2px; }
+            .print-meta-label { font-weight: bold; text-align: left; padding-right: 5px; }
+            #print-timestamp { font-size: 8pt; color: #555; text-align: left !important; margin-top: 5px; }
+            .print-logo { font-size: 60px; color: var(--primary-color); display: none !important; }
+            #print-realisasi-meta { display: block !important; margin-top: 10px; padding-top: 10px; border-top:1px dotted #ccc; font-size: 9pt; line-height: 1.6; text-align: center; }
+            .print-meta-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 2px; }
+            .print-meta-label { font-weight: bold; margin-right: 0; }
+
+            /* TABEL REALISASI PRINT */
+            #summary-realisasi-table { width: 100%; table-layout: fixed !important; min-width: unset !important; border: 1px solid #000 !important; border-collapse: collapse; font-size: 8pt !important; word-break: break-word; }
+            #summary-realisasi-table th, #summary-realisasi-table td { border: 0.5px solid #000 !important; padding: 1px 2px !important; color: black !important; text-align: center !important; vertical-align: middle; white-space: normal !important; overflow: visible !important; visibility: visible !important; display: table-cell !important; }
+            #summary-realisasi-table th { background-color: #0056b3 !important; color: #ffffff !important; font-weight: bold !important; text-transform: uppercase; text-align: center !important; -webkit-print-color-adjust: exact; }
+            #summary-realisasi-table th:nth-child(1), #summary-realisasi-table td:nth-child(1) { width: 3% !important; text-align: center; }
+            #summary-realisasi-table th:nth-child(2), #summary-realisasi-table td:nth-child(2) { width: 14% !important; text-align: left !important; }
+            #summary-realisasi-table th:nth-child(3), #summary-realisasi-table td:nth-child(3) { width: 10% !important; text-align: left !important; }
+            #summary-realisasi-table th:nth-child(4), #summary-realisasi-table td:nth-child(4) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(5), #summary-realisasi-table td:nth-child(5) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(6), #summary-realisasi-table td:nth-child(6) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(7), #summary-realisasi-table td:nth-child(7) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(8), #summary-realisasi-table td:nth-child(8) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(9), #summary-realisasi-table td:nth-child(9) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(10), #summary-realisasi-table td:nth-child(10) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(11), #summary-realisasi-table td:nth-child(11) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(12), #summary-realisasi-table td:nth-child(12) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(13), #summary-realisasi-table td:nth-child(13) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(14), #summary-realisasi-table td:nth-child(14) { width: 6.083% !important; text-align: right !important; }
+            #summary-realisasi-table th:nth-child(16), #summary-realisasi-table td:nth-child(16) { width: 6.083% !important; text-align: right !important; }
+
+            /* TABEL PENCARIAN (SEARCH) - PRINT STYLE */
+            #search-result-table { width: 100%; table-layout: fixed !important; min-width: unset !important; border: 1px solid #000 !important; border-collapse: collapse; font-size: 9pt !important; word-break: break-word; }
+            #search-result-table th, #search-result-table td { border: 0.5px solid #000 !important; padding: 1px 2px !important; color: black !important; text-align: center !important; vertical-align: middle; white-space: normal !important; overflow: visible !important; visibility: visible !important; display: table-cell !important; }
+            #search-result-table th { background-color: #0056b3 !important; color: #ffffff !important; font-weight: bold !important; text-transform: uppercase; text-align: center !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #search-result-table th:nth-child(1), #search-result-table td:nth-child(1) { width: 3% !important; }
+            #search-result-table th:nth-child(2), #search-result-table td:nth-child(2) { width: 12% !important; }
+            #search-result-table th:nth-child(3), #search-result-table td:nth-child(3) { width: 15% !important; }
+            #search-result-table th:nth-child(4), #search-result-table td:nth-child(4) { width: 10% !important; }
+            #search-result-table th:nth-child(5), #search-result-table td:nth-child(5) { width: 10% !important; }
+            #search-result-table th:nth-child(6), #search-result-table td:nth-child(6) { width: 10% !important; }
+            #search-result-table th:nth-child(7), #search-result-table td:nth-child(7) { width: 8% !important; text-transform: uppercase; }
+            #search-result-table th:nth-child(8), #search-result-table td:nth-child(8) { width: 6% !important; }
+            #search-result-table th:nth-child(9), #search-result-table td:nth-child(9) { width: 8% !important; }
+            #search-result-table th:nth-child(10), #search-result-table td:nth-child(10) { width: 10% !important; }
+            #search-result-table th:nth-child(10), #search-result-table td:nth-child(10) { display: none !important; border: none !important; }
+            #search-result-table th:last-child, #search-result-table td:last-child { display: none !important; border: none !important; }
+
+            /* TABEL DATA UTAMA PRINT */
+            #main-table { width: 100%; table-layout: fixed !important; min-width: unset !important; border: 1px solid #000 !important; border-collapse: collapse; font-size: 9pt !important; word-break: break-word; }
+            #main-table th, #main-table td { border: 0.5px solid #000 !important; padding: 1px 2px !important; color: black !important; text-align: center !important; vertical-align: middle; white-space: normal !important; overflow: visible !important; visibility: visible !important; display: table-cell !important; }
+            #main-table th { background-color: #28a745 !important; color: #ffffff !important; font-weight: bold !important; text-transform: uppercase; text-align: center !important; -webkit-print-color-adjust: exact; }
+            #main-table th:nth-child(1), #main-table td:nth-child(1) { width: 3% !important; text-align: center; }
+            #main-table th:nth-child(2), #main-table td:nth-child(2) { width: 12% !important; }
+            #main-table th:nth-child(3), #main-table td:nth-child(3) { width: 15% !important; }
+            #main-table th:nth-child(4), #main-table td:nth-child(4) { width: 10% !important; }
+            #main-table th:nth-child(5), #main-table td:nth-child(5) { width: 10% !important; }
+            #main-table th:nth-child(6), #main-table td:nth-child(6) { width: 10% !important; }
+            #main-table th:nth-child(7), #main-table td:nth-child(7) { width: 8% !important; text-transform: uppercase; }
+            #main-table th:nth-child(8), #main-table td:nth-child(8) { width: 6% !important; }
+            #main-table th:nth-child(9), #main-table td:nth-child(9) { width: 8% !important; }
+            #main-table th:nth-child(10), #main-table td:nth-child(10) { width: 10% !important; }
+            #main-table th:nth-child(11), #main-table td:nth-child(11) { width: 6% !important; display: none !important; }
+            #main-table th:nth-child(4), #main-table td:nth-child(4) { display: none !important; border: none !important; }
+            .action-buttons, th:last-child, td:last-child { display: none !important; }
+        }
+    </style>
+
+    <!-- JAVASCRIPT (FULL LOGIC + SECURE LOGIN) -->
+    <script>
+        // --- CONFIG ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMAxaCDanYcHHwOMJf6WAPUjsdwbrWvZNL5BZVPDyOtz86imC7Uxh0QSX7lhn1Gxof/exec";
+        
+        // --- VARIABLES ---
+        const fullMonths = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const printMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+        const monthMapFull = {'Januari':'01','Februari':'02','Maret':'03','April':'04','Mei':'05','Juni':'06','Juli':'07','Agustus':'08','September':'09','Oktober':'10','November':'11','Desember':'12'};
+        const monthMapEn = {'Januari': 'January', 'Februari': 'February', 'Maret': 'March', 'April': 'April', 'Mei': 'May', 'Juni': 'June', 'Juli': 'July', 'Agustus': 'August', 'September': 'September', 'Oktober': 'October', 'November': 'November', 'Desember': 'December'};
+        const shortMonthMap = {'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'mei': 5, 'jun': 6, 'jul': 7, 'agt': 8, 'sep': 9, 'okt': 10, 'nov': 11, 'des': 12};
+
+        // --- DATA USER SIMULASI (PASSWORD BISA DIUBAH LOKAL) ---
+        let simulatedUsers = [
+            { id: 1, name: "Administrator", username: "admin", password: "uus687264", role: "admin", ptName: null },
+            { id: 2, name: "Admin PT", username: "admin_pt", password: "123", role: "pt", ptName: "PT Pertamina" },
+            { id: 3, name: "Agan User", username: "user1", password: "123", role: "pt", ptName: "PT Samudera" },
+            { id: 4, name: "Supervisor", username: "super", password: "123", role: "admin", ptName: null },
+            { id: 5, name: "Staf Admin", username: "staf", password: "hiswana153", role: "admin/staf", ptName: null }
+        ];
+
+        // --- APP STATE (SEPARATED) ---
+        let appState = {
+            currentUser: null,
+            realisasiData: [],
+            filteredRealisasi: [],
+            userData: [],
+            currentPage:1,
+            rowsPerPage: 50
+        };
+        
+        // ========================================
+        // --- FUNCTIONS (GLOBAL SCOPE) ---
+        // ========================================
+        
+        window.doLogin = async function() {
+            const roleEl = document.getElementById('role');
+            const userEl = document.getElementById('username');
+            const passEl = document.getElementById('password');
+            const btnLogin = document.querySelector('button[onclick="window.doLogin()"]');
+
+            if(!roleEl || !userEl || !passEl) {
+                showToast("ERROR: Elemen login tidak ditemukan.", "error");
+                return;
+            }
+
+            const role = roleEl.value;
+            const user = userEl.value.trim().toLowerCase();
+            const pass = passEl.value.trim();
+
+            // UI Loading State
+            if(btnLogin) { btnLogin.disabled = true; btnLogin.innerHTML = "Memproses..."; }
+
+            try {
+                // 1. Fetch User Data from Sheet (Async)
+                await window.fetchUserData();
+
+                if (user === 'admin' && pass === 'admin123' && role === 'admin') {
+                    setupAppSession({
+                        id: 999, name: "Administrator", username: "admin", password: "admin123", role: "admin", ptName: null
+                    });
+                    return;
+                }
+                
+                // --- FIX: LOGIN ADMIN/STAF (PASSWORD BARU: hiswana153) ---
+                if (user === 'staf' && pass === 'hiswana153' && role === 'admin/staf') {
+                    setupAppSession({
+                        id: 5, name: "Staf Admin", username: "staf", password: "hiswana153", role: "admin/staf", ptName: null
+                    });
+                    return;
+                }
+
+                const foundUser = appState.userData.find(u => 
+                    u.username.trim().toLowerCase() === user &&
+                    u.password === pass &&
+                    u.role === role
+                );
+
+                if (foundUser) {
+                    setupAppSession(foundUser);
+                } else {
+                    showToast("Login Gagal!\n\nUsername atau Password salah, atau Role tidak sesuai.", "error");
+                }
+
+            } catch (error) {
+                console.error("Login Error:", error);
+                showToast("Terjadi kesalahan sistem saat login. Silakan coba lagi.", "error");
+            } finally {
+                if(btnLogin) { btnLogin.disabled = false; btnLogin.innerHTML = "MASUK <i class='fas fa-arrow-right'></i>"; }
+            }
+        };
+
+        // --- LOGIC PENERAPAN UI BERDASARKAN ROLE (ADMIN/STAF) ---
+        function applyRoleRestrictions() {
+            const role = appState.currentUser ? appState.currentUser.role : null;
+            
+            if (!role) return;
+
+            // --- TARGET ELEMENTS ---
+            // Menu Data
+            const btnRefreshUser = document.getElementById('btn-refresh-user');
+            const btnExportExcel = document.getElementById('btn-export-to-excel-main');
+            const btnPdfMain = document.getElementById('btn-pdf-main');
+            const btnCetakMain = document.getElementById('btn-cetak-main');
+            const tableContainer = document.getElementById('view-data').querySelector('.table-container');
+            
+            // Menu Navigation Links
+            const navPencarian = document.getElementById('nav-pencarian');
+            const navPengaturan = document.getElementById('nav-pengaturan');
+
+            if (role === 'admin/staf') {
+                // 1. Menu Data: Hide specific buttons & table
+                if(btnRefreshUser) btnRefreshUser.style.display = 'none';
+                if(btnExportExcel) btnExportExcel.style.display = 'none';
+                if(btnPdfMain) btnPdfMain.style.display = 'none';
+                if(btnCetakMain) btnCetakMain.style.display = 'none';
+                if(tableContainer) tableContainer.style.display = 'none';
+
+                // 2. Menu Pencarian: Hide Completely
+                if(navPencarian) navPencarian.style.display = 'none';
+
+                // 3. Menu Realisasi: Visible (with custom styling logic inside render function)
+
+                // 4. --- PERINTAH BARU: SEMBUNYIKAN MENU PENGATURAN ---
+                if(navPengaturan) navPengaturan.style.display = 'none';
+
+            } else {
+                // Logic Restore Visibility (Untuk Admin)
+                if(navPencarian) navPencarian.style.display = ''; 
+                if(navPengaturan) navPengaturan.style.display = '';
+                
+                if(btnRefreshUser) btnRefreshUser.style.display = 'inline-flex';
+                if(btnExportExcel) btnExportExcel.style.display = 'inline-flex';
+                if(btnPdfMain) btnPdfMain.style.display = 'inline-flex';
+                if(btnCetakMain) btnCetakMain.style.display = 'inline-flex';
+                if(tableContainer) tableContainer.style.display = 'block';
+            }
+        }
+
+        function setupAppSession(userObj) {
+            appState.currentUser = userObj;
+            
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            
+            // Update UI Profile
+            document.getElementById('user-display-name').textContent = userObj.name;
+            document.getElementById('user-display-role').textContent = userObj.role.toUpperCase();
+            document.getElementById('user-avatar').textContent = userObj.name.charAt(0).toUpperCase();
+            document.getElementById('set-role-name').textContent = userObj.name;
+            document.getElementById('set-username').textContent = "Username: " + userObj.username;
+            document.getElementById('set-avatar').textContent = userObj.name.charAt(0).toUpperCase();
+            
+            // --- FIX HIDE PENGATURAN MENU ---
+            if (userObj.role !== 'admin') {
+                document.getElementById('nav-pengaturan').style.display = 'none';
+            }
+
+            document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-data').classList.add('active');
+
+            // APPLY RESTRICTIONS
+            applyRoleRestrictions();
+
+            // Load Realisasi Data
+            window.fetchRealisasiData();
+        }
+
+        // --- FETCH REALISASI ---
+        window.fetchRealisasiData = async function() {
+            try {
+                const url = `${SCRIPT_URL}?action=getData&sheet=Sheet1`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'text/plain' }
+                });
+                
+                if (!response.ok) throw new Error("Gagal mengakses GAS Script. Status: " + response.status);
+                const json = await response.json();
+                if (json.status !== 'success' || !json.data) throw new Error("Gagal mengambil data Realisasi.");
+                
+                const sheetData = json.data;
+                if (sheetData.length > 0) { 
+                    appState.realisasiData = mapGasDataToObj(sheetData); 
+                    appState.filteredRealisasi = [...appState.realisasiData];
+                    showToast("Data Realisasi Berhasil Dimuat via GAS!", "success");
+                } else {
+                    appState.realisasiData = [];
+                    appState.filteredRealisasi = [];
+                    showToast("Data Google Sheet KOSONG.", "error");
+                }
+            } catch (error) {
+                console.error("Gagal Load Data Realisasi:", error);
+                appState.realisasiData = [
+                    {no:1, namaPT:"PT Pertamina", namaPangkalan:"Pangkalan A", alamat:"Jl. A", kelurahan:"A", kecamatan:"A", kabupaten:"SERANG", provinsi:"BANTEN", jumlahTabung:500, periode:"Januari 2025", inisialPT:"PERT"}
+                ];
+                appState.filteredRealisasi = [...appState.realisasiData];
+                showToast("Koneksi Error. Menggunakan Data Dummy.", "error");
+            }
+            
+            populateFilters(); 
+            renderRealisasiTable(); 
+            updateDashboardStats(); 
+            populatePTDataList();
+
+            // --- FIX AUTO FILTER PT ---
+            if (appState.currentUser && appState.currentUser.role !== 'admin' && appState.currentUser.role !== 'admin/staf') {
+                console.log("Auto-filtering data for PT:", appState.currentUser.ptName);
+                window.applyDataFilters(true);
+            }
+        };
+
+        // --- FETCH USER ---
+        window.fetchUserData = async function() {
+            try {
+                const url = `${SCRIPT_URL}?action=getUsers&sheet=Data_User`;
+                const response = await fetch(url, { method: 'GET', headers: { 'Content-Type': 'text/plain' } });
+                if (!response.ok) throw new Error("Gagal akses User Data via GAS.");
+                const json = await response.json();
+                if (json.status !== 'success' || !json.data) throw new Error("Gagal mengambil data User.");
+
+                const sheetData = json.data;
+                let csvUserList = [];
+                for (let i =1; i < sheetData.length; i++) {
+                    const r = sheetData[i]; 
+                    if (r && r.length >= 6) {
+                        csvUserList.push({
+                            id: r[0] ? r[0] : i, name: r[1] ? String(r[1]) : '-', username: r[2] ? String(r[2]) : '-', password: r[3] ? String(r[3]) : '-', role: r[4] ? String(r[4]) : '-', ptName: r[5] ? String(r[5]) : '-'
+                        });
+                    }
+                }
+                const hasAdmin = csvUserList.some(u => u.username.toLowerCase() === 'admin');
+                if (!hasAdmin) csvUserList.push({ id: 999, name: "Administrator", username: "admin", password: "admin123", role: "admin", ptName: null });
+                
+                // Cek apakah ada user staf di sheet, jika tidak pakai simulasi
+                const hasStaf = csvUserList.some(u => u.username.toLowerCase() === 'staf');
+                if(!hasStaf) csvUserList.push({ id: 5, name: "Staf Admin", username: "staf", password: "hiswana153", role: "admin/staf", ptName: null });
+
+                appState.userData = csvUserList;
+                renderUserTable();
+                showToast("Daftar User berhasil dimuat via GAS!", "success");
+            } catch (error) {
+                console.warn("Fetch User Error:", error);
+                // Ambil data dari variable global simulatedUsers
+                appState.userData = [...simulatedUsers];
+                renderUserTable();
+                showToast("Gagal muat User Sheet. Menggunakan Data Simulasi.", "error");
+            }
+        };
+
+        // --- FUNGSI PEMBANTU (MAPPER GAS ARRAY KE OBJ) ---
+        function mapGasDataToObj(dataArray) {
+            return dataArray.slice(1).map((r, i) => {
+                let processedPeriode = '-';
+                if (r[9]) {
+                    if (r[9] instanceof Date) {
+                        const y = r[9].getFullYear();
+                        const m = r[9].getMonth();
+                        const mName = fullMonths[m];
+                        processedPeriode = `${mName} ${y}`; 
+                    } else {
+                        let str = String(r[9]);
+                        if (str.includes('T')) str = str.split('T')[0]; 
+                        const monthName = fullMonths.find(m => str.includes(m));
+                        const yearMatch = str.match(/\b(20\d{2})\b/);
+                        if (monthName && yearMatch) processedPeriode = `${monthName} ${yearMatch[0]}`;
+                        else {
+                            const parts = str.split('-');
+                            if (parts.length === 3) {
+                                const y = parseInt(parts[0]);
+                                const m = parseInt(parts[1]) - 1;
+                                if (!isNaN(y) && m >=0 && m < 12) {
+                                    const mName = fullMonths[m];
+                                    processedPeriode = `${mName} ${y}`;
+                                } else processedPeriode = str;
+                            } else processedPeriode = str;
+                        }
+                    }
+                }
+                return {
+                    no: r[0] ? String(r[0]) : (i + 1),
+                    namaPT: r[1] ? String(r[1]) : '-',
+                    namaPangkalan: r[2] ? String(r[2]) : '-',
+                    alamat: r[3] ? String(r[3]) : '-',
+                    kelurahan: r[4] ? String(r[4]) : '-',
+                    kecamatan: r[5] ? String(r[5]) : '-',
+                    kabupaten: r[6] ? String(r[6]) : '-',
+                    provinsi: r[7] ? String(r[7]) : '-',
+                    jumlahTabung: parseInt(r[8]) || 0,
+                    periode: processedPeriode,
+                    inisialPT: r[10] ? String(r[10]) : '-'
+                }
+            });
+        }
+
+        // -------------------------------------------------------
+
+        function toggleLoginHint() { document.getElementById('login-hint').classList.toggle('hidden'); }
+        function normalize(str) { return (str || "").trim().toLowerCase(); }
+        function showToast(msg, type) {
+            const c = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.className = "toast " + type;
+            t.innerHTML = "<span>" + msg + "</span> <span onclick=\"this.parentElement.remove()\" style=\"cursor:pointer\">✕</span>";
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+        function closeModal(id) { 
+            const el = document.getElementById(id);
+            if(el) el.classList.add('hidden'); 
+        }
+
+        function renderRealisasiTable() {
+            const tbody = document.getElementById('table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            const start = (appState.currentPage -1) * appState.rowsPerPage;
+            const end = start + appState.rowsPerPage;
+            const pageData = appState.filteredRealisasi.slice(start, end);
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" class="text-center p-4">Data tidak ditemukan.</td></tr>';
+                const pInfo = document.getElementById('page-info');
+                if(pInfo) pInfo.textContent = "Menampilkan 0 data";
+                return;
+            }
+            pageData.forEach((r, i) => {
+                const tr = document.createElement('tr');
+                const createTextCell = (text) => { const td = document.createElement('td'); td.textContent = text; return td; };
+                tr.appendChild(createTextCell(r.no));
+                tr.appendChild(createTextCell(r.namaPT));
+                tr.appendChild(createTextCell(r.namaPangkalan));
+                tr.appendChild(createTextCell(r.alamat));
+                tr.appendChild(createTextCell(r.kelurahan));
+                tr.appendChild(createTextCell(r.kecamatan));
+                tr.appendChild(createTextCell(r.kabupaten));
+                tr.appendChild(createTextCell(r.provinsi));
+                const tdJumlah = document.createElement('td');
+                tdJumlah.style.fontWeight = 'bold';
+                tdJumlah.style.color = 'var(--primary-color)';
+                tdJumlah.textContent = r.jumlahTabung.toLocaleString('id-ID');
+                tr.appendChild(tdJumlah);
+                tr.appendChild(createTextCell(r.periode));
+                tr.appendChild(createTextCell(r.inisialPT));
+                const tdAction = document.createElement('td');
+                tdAction.className = 'no-print';
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'action-buttons';
+                const btnEdit = document.createElement('button');
+                btnEdit.type = 'button'; btnEdit.className = 'btn btn-sm btn-primary'; btnEdit.innerHTML = '<i class="fas fa-edit"></i>'; btnEdit.onclick = () => showToast("Fitur Edit Aktif", "info");
+                const btnDelete = document.createElement('button');
+                btnDelete.type = 'button'; btnDelete.className = 'btn btn-sm btn-danger'; btnDelete.innerHTML = '<i class="fas fa-trash"></i>'; btnDelete.onclick = () => showToast("Fitur Hapus Aktif", "warning");
+                btnContainer.appendChild(btnEdit); btnContainer.appendChild(btnDelete); tdAction.appendChild(btnContainer); tr.appendChild(tdAction);
+                tbody.appendChild(tr);
+            });
+            document.getElementById('page-info').textContent = "Hal " + appState.currentPage + " / " + Math.ceil(appState.filteredRealisasi.length/appState.rowsPerPage);
+            document.getElementById('prev-btn').disabled = appState.currentPage === 1;
+            document.getElementById('next-btn').disabled = end >= appState.filteredRealisasi.length;
+        }
+
+        function renderUserTable() {
+            const tbody = document.getElementById('user-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            appState.userData.forEach((u, i) => {
+                const tr = document.createElement('tr');
+                const createTextCell = (text) => { const td = document.createElement('td'); td.textContent = text; return td; };
+                tr.appendChild(createTextCell(u.id));
+                tr.appendChild(createTextCell(u.name));
+                tr.appendChild(createTextCell(u.username));
+                tr.appendChild(createTextCell(u.role));
+                tr.appendChild(createTextCell(u.ptName));
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateDashboardStats() {
+            const data = appState.filteredRealisasi; 
+            const ptCount = new Set(data.map(d=>d.namaPT)).size;
+            const pangCount = new Set(data.map(d=>d.namaPangkalan)).size;
+            const tabCount = data.reduce((a,b)=>a+b.jumlahTabung, 0);
+            document.getElementById('stat-total-pt').textContent = ptCount;
+            document.getElementById('stat-total-pangkalan').textContent = pangCount;
+            document.getElementById('stat-total-tabung').textContent = tabCount.toLocaleString('id-ID');
+            document.getElementById('stat-avg-pt').textContent = ptCount ? Math.round(tabCount/ptCount).toLocaleString('id-ID') : 0;
+        }
+
+        function populateFilters() {
+            const pts = [...new Set(appState.realisasiData.map(d => d.namaPT))].sort();
+            const kabs = [...new Set(appState.realisasiData.map(d => d.kabupaten))].sort();
+            const kecs = [...new Set(appState.realisasiData.map(d => d.kecamatan))].sort();
+            const kels = [...new Set(appState.realisasiData.map(d => d.kelurahan))].sort();
+            
+            fillSelect('data-filter-pt', pts);
+            fillSelect('adv-filter-kab', kabs); 
+            fillSelect('adv-filter-kec', kecs); 
+            fillSelect('adv-filter-kel', kels);
+            fillSelect('adv-filter-pt', pts); 
+            fillSelect('real-filter-kab', kabs); 
+            fillSelect('real-filter-pt', pts);
+        }
+
+        function fillSelect(id, options) {
+            const sel = document.getElementById(id);
+            if (!sel) return;
+            const firstOpt = sel.options[0] ? sel.options[0].outerHTML : '';
+            sel.innerHTML = firstOpt;
+            options.forEach(opt => {
+                if (!opt) return;
+                const el = document.createElement('option');
+                el.value = opt; el.textContent = opt;
+                sel.appendChild(el);
+            });
+        }
+
+        function populatePTDataList() {
+            const dl = document.getElementById('pt-list');
+            if(dl) {
+                dl.innerHTML = '';
+                const ptsFromSheet = [...new Set(appState.realisasiData.map(d => d.namaPT))].sort();
+                ptsFromSheet.forEach(pt => {
+                    const op = document.createElement('option');
+                    op.value = pt; dl.appendChild(op);
+                });
+            }
+        }
+        
+        function getMonthIndex(periodString) {
+            if (!periodString) return -1;
+            const p = periodString.toLowerCase().trim();
+            for (let i =1; i <= 12; i++) {
+                if (p.includes(fullMonths[i-1].toLowerCase())) return i;
+                const englishName = monthMapEn[fullMonths[i-1]];
+                if (englishName && p.includes(englishName.toLowerCase())) return i;
+                const code = monthMapFull[fullMonths[i-1]];
+                if (periodString.includes("-" + code)) return i;
+                if (i >= 10 && periodString.includes("-" + code.replace(/^0/, ''))) return i;
+                if (periodString.includes(" " + code)) return i;
+                if (i >= 10 && periodString.includes(" " + code.replace(/^0/, ''))) return i;
+                if (i >= 10 && periodString.endsWith(code)) return i;
+                if (i >= 10 && periodString.endsWith(code.replace(/^0/, ''))) return i;
+            }
+            return -1;
+        }
+
+        function checkMonthMatch(periodeData, rawBulan, rawTahun) {
+            const blnSel = rawBulan ? normalize(rawBulan) : "";
+            const thnSel = rawTahun ? normalize(rawTahun) : "";
+            if ((!blnSel || blnSel === "semua") && (!thnSel || thnSel === "semua")) return true; 
+            if (!periodeData) return false;
+            if (thnSel && thnSel !== "semua") { if (!periodeData.includes(rawTahun)) return false; }
+            if (blnSel && blnSel !== "semua") {
+                const periodMonthIndex = getMonthIndex(periodeData);
+                const selectedMonthIndex = shortMonthMap[blnSel] ? parseInt(shortMonthMap[blnSel]) : -1;
+                if (periodMonthIndex === -1 || selectedMonthIndex === -1) { return false; } 
+                else { if (periodMonthIndex !== selectedMonthIndex) return false; }
+            }
+            return true;
+        }
+
+        window.applyDataFilters = function(forcePT = false) {
+            const rawBln = document.getElementById('data-filter-bulan').value;
+            const thn = normalize(document.getElementById('data-filter-tahun').value);
+            let pt = null; 
+
+            const ptSelect = document.getElementById('data-filter-pt');
+            const isPTUser = appState.currentUser && appState.currentUser.role === 'pt';
+
+            if (isPTUser) {
+                pt = appState.currentUser.ptName;
+                if(ptSelect) {
+                    ptSelect.value = pt; 
+                    ptSelect.disabled = true; 
+                }
+            } else {
+                if(ptSelect) ptSelect.disabled = false;
+                if (pt === null) pt = normalize(ptSelect.value);
+            }
+
+            let source = appState.realisasiData;
+
+            if (pt && pt !== "semua") {
+                source = source.filter(d => {
+                    const dataPT = normalize(d.namaPT);
+                    const userPT = normalize(pt);
+                    if (dataPT === userPT || dataPT.includes(userPT)) return true;
+                    return false;
+                });
+            }
+            
+            source = source.filter(d => checkMonthMatch(d.periode, rawBln, thn));
+            
+            appState.filteredRealisasi = source;
+            appState.currentPage = 1;
+            
+            renderRealisasiTable();
+            updateDashboardStats();
+            updatePrintSummary();
+        };
+
+        window.changePage = function(d) { appState.currentPage += d; renderRealisasiTable(); };
+
+        window.updatePTDropdownByKab = function(kabId, ptId) {
+            if (ptId === 'adv-filter-pt' && appState.currentUser && appState.currentUser.role === 'pt') {
+                const ptSelect = document.getElementById(ptId);
+                if(ptSelect) {
+                    ptSelect.innerHTML = '<option value="Semua">Semua PT</option>'; 
+                    const userPT = appState.currentUser.ptName;
+                    const opt = document.createElement('option');
+                    opt.value = userPT; opt.textContent = userPT;
+                    ptSelect.appendChild(opt);
+                    ptSelect.value = userPT;
+                    ptSelect.disabled = true;
+                }
+                return;
+            }
+
+            const kabVal = normalize(document.getElementById(kabId).value); 
+            let data = appState.realisasiData;
+            if (kabVal && kabVal !== "semua") data = data.filter(d => normalize(d.kabupaten) === kabVal);
+            const pts = [...new Set(data.map(d => d.namaPT))].sort();
+            fillSelect(ptId, pts);
+        };
+
+        window.handleImport = function(input) {
+            const file = input.files[0];
+            const btn = document.getElementById('btn-import-excel');
+            const originalText = btn.innerHTML;
+
+            if (!file) { showToast("Silakan pilih file Excel/CSV dulu.", "error"); return; }
+            if (!file.name.endsWith('.csv')) { showToast("Format file harus .csv", "error"); return; }
+
+            openMonitor(true);
+            document.getElementById('monitor-result').classList.add('hidden');
+            document.getElementById('monitor-spinner').style.display = 'block';
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const text = e.target.result;
+                    const rows = parseCSV(text);
+                    const totalRows = rows.length;
+                    if (rows.length === 0) throw new Error("File CSV kosong.");
+                    document.getElementById('mon-total').textContent = totalRows;
+                    btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Mengimpor " + totalRows + " data...";
+                    btn.disabled = true;
+
+                    const payload = { action: "importCSV", data: rows };
+
+                    const res = fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: JSON.stringify(payload)
+                    });
+
+                    showToast("Data sedang dikirim ke Backend...", "info");
+
+                    setTimeout(() => {
+                        appState.realisasiData = [...appState.realisasiData, ...rows]; 
+                        appState.filteredRealisasi = [...appState.realisasiData];
+                        
+                        renderRealisasiTable(); 
+                        updateDashboardStats(); 
+                        updatePrintSummary();
+                        
+                        document.getElementById('monitor-spinner').style.display = 'none';
+                        document.getElementById('monitor-result').classList.remove('hidden');
+                        btn.innerHTML = originalText; btn.disabled = false;
+                        input.value = "";
+                    }, 2000);
+
+                } catch (err) {
+                    showToast("Gagal Parse CSV: " + err.message, "error");
+                    closeMonitor(); 
+                    if(input) input.value = "";
+                    btn.innerHTML = originalText; btn.disabled = false;
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        window.downloadExcel = function() {
+            const dataToExport = appState.filteredRealisasi;
+            if (dataToExport.length === 0) { showToast("Tidak ada data.", "error"); return; }
+            showToast("Menyiapkan file Excel...", "info");
+            const headers = ["No", "Nama PT", "Nama Pangkalan", "Alamat Pangkalan", "Kelurahan", "Kecamatan", "Kabupaten", "Provinsi", "Jumlah Tabung", "Periode", "Inisial PT"];
+            let csvContent = headers.join(",") + "\n";
+            dataToExport.forEach(row => {
+                const wrapText = (text) => {
+                    const t = text === null || text === undefined ? "" : text.toString();
+                    if (t.includes(",") || t.includes('"') || t.includes("\n")) { return "\"" + t.replace(/"/g, '""') + "\""; }
+                    return t;
+                };
+                const rowData = [row.no, wrapText(row.namaPT), wrapText(row.namaPangkalan), wrapText(row.alamat), wrapText(row.kelurahan), wrapText(row.kecamatan), wrapText(row.kabupaten), wrapText(row.provinsi), row.jumlahTabung, wrapText(row.periode), wrapText(row.inisialPT)];
+                csvContent += rowData.join(",") + "\n";
+            });
+            const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            const now = new Date();
+            const timestamp = now.toISOString().replace(/[:.]/g, '-');
+            link.setAttribute("download", "Data_Realisasi_" + timestamp + ".csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Data berhasil diekspor.", "success");
+        };
+
+        window.cleanTargetPTs = function() {
+            const targets = ["-", "MUARA CIUJUNG TIMUR"];
+            if (appState.realisasiData.length === 0) { showToast("Belum ada data.", "error"); return; }
+            const matches = appState.realisasiData.filter(d => targets.includes(d.namaPT));
+            if (matches.length === 0) { showToast("Data tidak ditemukan.", "info"); return; }
+            const confirmed = confirm("Yakin ingin menghapus " + matches.length + " data?");
+            if(!confirmed) return;
+            
+            showToast("Menemukan " + matches.length + " data. Memulai proses penghapusan...", "warning");
+            
+            const payload = { action: "deletePTs", targets: targets };
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(payload)
+            });
+            
+            setTimeout(() => { refreshRealisasiData(); },2000);
+        };
+
+        window.refreshRealisasiData = function() { window.fetchRealisasiData(); }; 
+        window.refreshUserData = function() { window.fetchUserData(); }; 
+
+        window.renderAdvKab = function() {
+            const prov = normalize(document.getElementById('adv-filter-prov').value);
+            let data = appState.realisasiData;
+            
+            if (appState.currentUser && appState.currentUser.role !== 'admin') {
+                const ptSelect = document.getElementById('adv-filter-pt');
+                if(ptSelect) {
+                    ptSelect.innerHTML = '<option value="Semua">Semua PT</option>'; 
+                    const userPT = appState.currentUser.ptName;
+                    const opt = document.createElement('option');
+                    opt.value = userPT; opt.textContent = userPT;
+                    ptSelect.appendChild(opt);
+                    ptSelect.value = userPT;
+                    ptSelect.disabled = true;
+                }
+                return;
+            } else {
+                if (prov && prov !== "semua") data = data.filter(d => normalize(d.provinsi) === prov);
+                const kabs = prov && prov !== "semua" ? [...new Set(data.map(d => d.kabupaten))].sort() : [...new Set(appState.realisasiData.map(d => d.kabupaten))].sort();
+                
+                const kabVal = normalize(document.getElementById('adv-filter-kab').value);
+                let filteredByKab = appState.realisasiData;
+                if (kabVal && kabVal !== "semua") { filteredByKab = filteredByKab.filter(d => normalize(d.kabupaten) === kabVal); }
+                const kecs = (kabVal && kabVal !== "semua") ? [...new Set(filteredByKab.map(d => d.kecamatan))].sort() : [];
+                fillSelect('adv-filter-kec', kecs);
+                document.getElementById('adv-filter-kel').innerHTML = '<option value="Semua">Semua</option>';
+                updatePTDropdownByKab('adv-filter-kab', 'adv-filter-pt');
+            }
+            
+            renderAdvSearch();
+        };
+
+        window.renderAdvKec = function() {
+            const kab = normalize(document.getElementById('adv-filter-kab').value);
+            const kec = normalize(document.getElementById('adv-filter-kec').value);
+            let data = appState.realisasiData;
+            if (kab && kab !== "semua") data = data.filter(d => normalize(d.kabupaten) === kab);
+            if (kec && kec !== "semua") {
+                data = data.filter(d => normalize(d.kecamatan) === kec);
+                const kels = [...new Set(data.map(d => d.kelurahan))].sort();
+                fillSelect('adv-filter-kel', kels);
+            } else { document.getElementById('adv-filter-kel').innerHTML = '<option value="Semua">Semua</option>'; }
+            renderAdvSearch();
+        }
+
+        window.renderAdvKel = function() { renderAdvSearch(); };
+
+        window.renderAdvSearch = function() {
+            const rawBln = document.getElementById('adv-filter-bulan').value;
+            const blnSel = normalize(rawBln);
+            const prov = normalize(document.getElementById('adv-filter-prov').value);
+            const kab = normalize(document.getElementById('adv-filter-kab').value);
+            const kec = normalize(document.getElementById('adv-filter-kec').value);
+            const kel = normalize(document.getElementById('adv-filter-kel').value);
+            let pt = null; 
+
+            if (appState.currentUser && appState.currentUser.role !== 'admin') {
+                pt = appState.currentUser.ptName;
+                const ptSelect = document.getElementById('adv-filter-pt');
+                if(ptSelect) {
+                    ptSelect.value = pt;
+                    ptSelect.disabled = true;
+                }
+            } else {
+                const ptSelect = document.getElementById('adv-filter-pt');
+                if(ptSelect) ptSelect.disabled = false;
+                pt = normalize(ptSelect.value);
+            }
+
+            const thn = normalize(document.getElementById('adv-filter-tahun').value);
+
+            let res = appState.realisasiData.filter(d => {
+                let match = true;
+                if (prov && prov !== "semua") { if (normalize(d.provinsi) !== prov) match = false; }
+                if (kab && kab !== "semua") { if (normalize(d.kabupaten) !== kab) match = false; }
+                if (kec && kec !== "semua") { if (normalize(d.kecamatan) !== kec) match = false; }
+                if (kel && kel !== "semua") { if (normalize(d.kelurahan) !== kel) match = false; }
+                if (pt && pt !== "semua") { 
+                    const dataPT = normalize(d.namaPT);
+                    const userPT = normalize(pt);
+                    if (dataPT === userPT) match = true;
+                    else if (dataPT.includes(userPT) && userPT.length > 3) match = true;
+                    else if (userPT.includes(dataPT) && dataPT.length > 3) match = true;
+                    else match = false;
+                }
+                if ((thn && thn !== "semua" || blnSel && blnSel !== "semua") && d.periode) { if (!checkMonthMatch(d.periode, rawBln, thn)) match = false; }
+                return match;
+            });
+
+            appState.filteredRealisasi = res; 
+
+            const ptCount = new Set(res.map(d=>d.namaPT)).size;
+            const pangCount = new Set(res.map(d=>d.namaPangkalan)).size; 
+            const tabCount = res.reduce((a,b)=>a+b.jumlahTabung, 0);
+
+            const elTotalPT = document.getElementById('search-total-pt');
+            const elTotalPang = document.getElementById('search-total-pangkalan');
+            const elTotalTabung = document.getElementById('search-total-tabung');
+
+            if(elTotalPT) elTotalPT.textContent = ptCount;
+            if(elTotalPang) elTotalPang.textContent = pangCount.toLocaleString('id-ID');
+            if(elTotalTabung) elTotalTabung.textContent = tabCount.toLocaleString('id-ID');
+
+            if(res.length === 0) {
+                showToast("Data tidak ditemukan untuk filter ini.", "warning");
+            } else {
+                showToast(`Menampilkan ${res.length} data.`, "success");
+            }
+
+            updatePrintSummary();
+            renderSearchTable('search-table-body', res);
+        };
+
+        window.resetAdvFilters = function() {
+            document.getElementById('adv-filter-kab').value = "Semua";
+            document.getElementById('adv-filter-kec').value = "Semua";
+            document.getElementById('adv-filter-kel').value = "Semua";
+            if (appState.currentUser.role === 'admin') {
+                 document.getElementById('adv-filter-pt').value = "Semua";
+                 document.getElementById('adv-filter-pt').disabled = false;
+            }
+            document.getElementById('adv-filter-bulan').value = "Semua";
+            document.getElementById('adv-filter-tahun').value = "Semua";
+            
+            renderAdvSearch();
+        };
+
+        window.renderRealisasiView = function() {
+            const kab = normalize(document.getElementById('real-filter-kab').value);
+            let pt = null;
+
+            if (appState.currentUser && appState.currentUser.role !== 'admin') {
+                pt = appState.currentUser.ptName;
+                document.getElementById('real-filter-pt').value = pt;
+                document.getElementById('real-filter-pt').disabled = true;
+            } else {
+                pt = normalize(document.getElementById('real-filter-pt').value);
+                document.getElementById('real-filter-pt').disabled = false;
+            }
+
+            const rawTahun = document.getElementById('real-filter-tahun').value;
+
+            let data = [...appState.realisasiData]; 
+            
+            if (kab && kab !== "semua") data = data.filter(d => normalize(d.kabupaten) === kab);
+            if (pt && pt !== "semua") data = data.filter(d => normalize(d.namaPT) === pt);
+
+            let dataForSummary = [...data];
+            if (rawTahun && rawTahun !== "semua") {
+                dataForSummary = dataForSummary.filter(d => d.periode && d.periode.includes(rawTahun));
+            }
+            
+            const totalTabungFiltered = dataForSummary.reduce((sum, item) => sum + (parseInt(item.jumlahTabung)||0), 0);
+            const yearLabel = (rawTahun && rawTahun !== "semua") ? rawTahun.toUpperCase() : "SEMUA TAHUN";
+
+            const elYear = document.getElementById('real-print-year');
+            const elTab = document.getElementById('real-print-tabung');
+            if(elYear) elYear.textContent = yearLabel;
+            if(elTab) elTab.textContent = totalTabungFiltered.toLocaleString('id-ID');
+
+            renderSummaryRealisasiTable(data, rawTahun);
+            applyRealisasi(data);
+        };
+
+        window.applyRealisasi = function(data) {
+            const kab = normalize(document.getElementById('real-filter-kab').value);
+            let pt = null;
+
+            if (appState.currentUser && appState.currentUser.role !== 'admin') {
+                pt = appState.currentUser.ptName;
+            } else {
+                pt = normalize(document.getElementById('real-filter-pt').value);
+            }
+
+            const rawBln = document.getElementById('real-filter-bulan').value;
+            const blnSel = normalize(rawBln);
+            const thn = normalize(document.getElementById('real-filter-tahun').value);
+
+            let res = data.filter(d => { 
+                let match = true;
+                if (kab && kab !== "semua") { if (normalize(d.kabupaten) !== kab) match = false; }
+                if (pt && pt !== "semua") { 
+                    const dataPT = normalize(d.namaPT);
+                    const userPT = normalize(pt);
+                    if (dataPT === userPT) match = true;
+                    else if (dataPT.includes(userPT) && userPT.length > 3) match = true;
+                    else if (userPT.includes(dataPT) && dataPT.length > 3) match = true;
+                    else match = false;
+                }
+                if ((thn && thn !== "semua" || blnSel && blnSel !== "semua") && d.periode) { if (!checkMonthMatch(d.periode, rawBln, thn)) match = false; }
+                return match;
+            });
+
+            const ptC = new Set(res.map(d=>d.namaPT)).size;
+            const tabC = res.reduce((a,b)=>a+b.jumlahTabung, 0);
+
+            const elPt = document.getElementById('modern-real-total-pt');
+            if (elPt) elPt.textContent = ptC;
+
+            const elTab = document.getElementById('modern-real-total-tabung');
+            if (elTab) elTab.textContent = tabC.toLocaleString('id-ID');
+
+            updatePrintSummary();
+        };
+
+        // --- FIX: ANOMALY DETECTION & DISPLAY LOGIC (ADMIN/STAF SUPPORT + CHECKLIST VISUAL) ---
+        window.renderSummaryRealisasiTable = function(dataSource, selectedYearStr) {
+            const tbody = document.getElementById('summary-realisasi-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if (!dataSource || dataSource.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="15" class="text-center p-4">Data tidak tersedia.</td></tr>';
+                return;
+            }
+            let processedData = [];
+            if (selectedYearStr && selectedYearStr !== "semua") processedData = dataSource.filter(d => d.periode && d.periode.includes(selectedYearStr));
+            else { processedData = dataSource; }
+            const grouped = {};
+            const totals = {"Jan":0, "Feb":0, "Mar":0, "Apr":0, "Mei":0, "Jun":0, "Jul":0, "Agt":0, "Sep":0, "Okt":0, "Nov":0, "Des":0};
+
+            const isAdminStaf = appState.currentUser && appState.currentUser.role === 'admin/staf';
+
+            processedData.forEach(d => {
+                const ptName = d.namaPT;
+                const kab = d.kabupaten;
+                const monthIdx = getMonthIndex(d.periode);
+                const shortMonth = (monthIdx !== -1) ? printMonths[monthIdx - 1] : "";
+                if (monthIdx !== -1) {
+                    if (!grouped[ptName]) {
+                        grouped[ptName] = { wilayah: kab, "Jan": 0, "Feb": 0, "Mar": 0, "Apr": 0, "Mei": 0, "Jun": 0, "Jul": 0, "Agt": 0, "Sep": 0, "Okt": 0, "Nov": 0, "Des": 0 };
+                    }
+                    grouped[ptName][shortMonth] += d.jumlahTabung;
+                    totals[shortMonth] += d.jumlahTabung;
+                }
+            });
+            
+            let no = 1;
+            for (const ptName in grouped) {
+                const ptData = grouped[ptName];
+                const tr = document.createElement('tr');
+                let html = "<td>" + no++ + "</td><td><strong>" + ptName + "</strong></td><td>" + ptData.wilayah + "</td>";
+                
+                printMonths.forEach((m, mIndex) => {
+                    let tdClass = "";
+                    let currentVal = ptData[m];
+                    let cellContent = "";
+                    let cellStyle = "";
+
+                    // 1. Check Anomaly (Data Double)
+                    if (currentVal > 0) {
+                        if (mIndex > 0) {
+                            let prevM = printMonths[mIndex - 1];
+                            let prevVal = ptData[prevM];
+                            if (currentVal > (prevVal * 1.5) && currentVal <= (prevVal * 2)) {
+                                tdClass = "data-anomaly";
+                            }
+                        }
+                        if (tdClass === "" && mIndex < 11) {
+                            let nextM = printMonths[mIndex + 1];
+                            let nextVal = ptData[nextM];
+                            if (currentVal > (nextVal * 1.5) && currentVal <= (nextVal * 2)) {
+                                tdClass = "data-anomaly";
+                            }
+                        }
+                    }
+
+                    // 2. Check Admin/Staf Requirement (Green Number / Red X)
+                    if (isAdminStaf) {
+                        if (currentVal > 0) {
+                            cellContent = '<i class="fas fa-check" style="font-size: 1.2rem;"></i>'; 
+                            cellStyle = "display-val-green";
+                        } else {
+                            cellContent = '<span style="font-size: 1.5rem; font-weight: bold;">X</span>';
+                            cellStyle = "display-val-red";
+                        }
+                    } else {
+                        cellContent = currentVal.toLocaleString('id-ID');
+                    }
+
+                    if (tdClass !== "") {
+                         cellStyle = tdClass;
+                    }
+
+                    html += `<td class="${cellStyle}" style="${cellStyle}">${cellContent}</td>`;
+                });
+                tr.innerHTML = html; 
+                tbody.appendChild(tr);
+            }
+
+            const footerBgColor = '#0056b3'; 
+            let footerHtml = "<tr class='footer-row-total'>";
+            footerHtml += "<td colspan='3' style='text-align: center; background-color: " + footerBgColor + " !important; color: #ffffff; font-weight: bold;'>JUMLAH TOTAL</td>";
+            printMonths.forEach(m => { 
+                let totalStyle = `style='text-align: right; background-color: ${footerBgColor} !important; color: #ffffff; font-weight: bold;'`;
+                
+                if (isAdminStaf) {
+                     totalStyle = `style='text-align: right; color: #ffffff; font-weight: bold;'`;
+                }
+                
+                footerHtml += `<td ${totalStyle}>${totals[m].toLocaleString('id-ID')}</td>`; 
+            });
+            footerHtml += "</tr>";
+            
+            const footerRow = document.createElement('tr');
+            footerRow.innerHTML = footerHtml;
+            tbody.appendChild(footerRow);
+        };
+
+        window.renderSearchTable = function(tbodyId, data) {
+            const tb = document.getElementById(tbodyId);
+            if(!tb) return;
+            tb.innerHTML = '';
+            data.forEach((r, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = "<td>" + (i+1) + "</td><td>" + r.namaPT + "</td><td>" + r.namaPangkalan + "</td><td>" + r.alamat + "</td><td>" + r.kelurahan + "</td><td>" + r.kecamatan + "</td><td>" + r.kabupaten + "</td><td>" + r.provinsi + "</td><td>" + r.jumlahTabung.toLocaleString('id-ID') + "</td><td>" + r.periode + "</td>"; 
+                tb.appendChild(tr);
+            });
+        };
+
+        window.switchTab = function(tab) {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+            const index = ['data','pencarian','realisasi','pengaturan'].indexOf(tab);
+            const links = document.querySelectorAll('.nav-link');
+            if(links[index]) links[index].classList.add('active');
+            document.getElementById('view-'+tab).classList.remove('hidden'); 
+            document.getElementById('view-'+tab).classList.add('active');
+            if (tab === 'realisasi') { renderRealisasiView(); }
+            if (tab === 'pencarian') { renderAdvSearch(); }
+        };
+
+        window.updatePrintSummary = function() {
+            const titleEl = document.getElementById('print-title-main');         
+            const metaBottomEl = document.getElementById('print-meta-real-bottom'); 
+            const timeEl = document.getElementById('print-timestamp');     
+            
+            if (!titleEl || !metaBottomEl || !timeEl) return; 
+
+            let wilayahText = "SEMUA WILAYAH";
+            let tahunText = "SEMUA TAHUN";
+            let ptCount = 0;
+            let tabCount = 0;
+
+            metaBottomEl.style.display = 'block'; 
+            
+            if(document.getElementById('view-pencarian').classList.contains('active')) {
+                const dataToSum = appState.filteredRealisasi; 
+                const rawBln = document.getElementById('adv-filter-bulan').value;
+                const blnSel = normalize(rawBln);
+                const thn = normalize(document.getElementById('adv-filter-tahun').value);
+                let kabLabel = document.getElementById('adv-filter-kab').options[document.getElementById('adv-filter-kab').selectedIndex].text;
+                wilayahText = (kabLabel && kabLabel !== "Semua") ? kabLabel.toUpperCase() : "SEMUA WILAYAH";
+                tahunText = (thn && thn !== "semua") ? thn.toUpperCase() : "SEMUA TAHUN";
+                
+                ptCount = new Set(dataToSum.map(d=>d.namaPT)).size;
+                const pangkalanCount = new Set(dataToSum.map(d=>d.namaPangkalan)).size; 
+                tabCount = dataToSum.reduce((a,b)=>a+b.jumlahTabung, 0);
+
+                if (titleEl) { titleEl.textContent = "LAPORAN DATA REALISASI"; titleEl.style.textAlign = 'center'; }
+                if(document.getElementById('print-prov-search')) document.getElementById('print-prov-search').textContent = "BANTEN";
+                if(document.getElementById('print-kab-search')) document.getElementById('print-kab-search').textContent = kabLabel;
+                if(document.getElementById('print-pt-search')) document.getElementById('print-pt-search').textContent = ptCount;
+                if(document.getElementById('print-tabung-search')) document.getElementById('print-tabung-search').textContent = tabCount.toLocaleString('id-ID');
+                if(document.getElementById('print-pangkalan-search')) document.getElementById('print-pangkalan-search').textContent = pangkalanCount.toLocaleString('id-ID');
+
+                metaBottomEl.innerHTML = ''; 
+                metaBottomEl.innerHTML = `
+                    <div class="print-meta-grid">
+                        <span class="print-meta-label">Wilayah :</span> <span>: ${wilayahText}</span>
+                        <span class="print-meta-label">Total PT :</span> <span>: ${ptCount}</span>
+                    </div>
+                    <div class="print-meta-grid">
+                        <span class="print-meta-label">Tahun :</span> <span>: ${tahunText}</span>
+                        <span class="print-meta-label">Total Tabung :</span> <span>: ${tabCount.toLocaleString('id-ID')}</span>
+                    </div>
+                `;
+
+                const now = new Date(); const dateStr = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); const timeStr = now.toLocaleTimeString('id-ID');
+                timeEl.textContent = "Dicetak pada: " + dateStr + " - Pukul " + timeStr;
+
+            } else if(document.getElementById('view-realisasi').classList.contains('active')) {
+                const kab = normalize(document.getElementById('real-filter-kab').value);
+                const thn = normalize(document.getElementById('real-filter-tahun').value);
+                let kabLabel = kab && kab !== "semua" ? document.getElementById('real-filter-kab').options[document.getElementById('real-filter-kab').selectedIndex].text : "Semua";
+                wilayahText = (kab && kab !== "semua") ? kab.toUpperCase() : "SEMUA WILAYAH";
+                tahunText = (thn && thn !== "semua") ? thn.toUpperCase() : "SEMUA TAHUN";
+                
+                ptCount = new Set(appState.filteredRealisasi.map(d=>d.namaPT)).size;
+                tabCount = appState.filteredRealisasi.reduce((a,b)=>a+b.jumlahTabung, 0);
+
+                if (titleEl) { titleEl.textContent = "LAPORAN REALISASI AGEN DPC BANTEN HISWANA MIGAS"; titleEl.style.textAlign = 'center'; }
+
+                metaBottomEl.innerHTML = ''; 
+                metaBottomEl.innerHTML = `
+                    <div class="print-meta-grid">
+                        <span class="print-meta-label">Wilayah :</span> <span>: ${wilayahText}</span>
+                        <span class="print-meta-label">Tahun :</span> <span>: ${tahunText}</span>
+                        <span class="print-meta-label">Total PT :</span> <span>: ${ptCount}</span>
+                    </div>
+                    <div class="print-meta-grid">
+                        <span class="print-meta-label">Total Tabung :</span> <span>: ${tabCount.toLocaleString('id-ID')}</span>
+                    </div>
+                `;
+
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const timeStr = now.toLocaleTimeString('id-ID');
+                timeEl.textContent = "Dicetak pada: " + dateStr + " - Pukul " + timeStr;
+
+            } else {
+                const rawBln = document.getElementById('data-filter-bulan').value;
+                const blnSel = normalize(rawBln);
+                const thn = normalize(document.getElementById('data-filter-tahun').value);
+                const pt = (appState.currentUser.role !== 'admin' && appState.currentUser.role !== 'admin/staf') ? appState.currentUser.ptName : normalize(document.getElementById('data-filter-pt').value); 
+                
+                let kabLabel = pt && pt !== "semua" ? pt : "Semua"; 
+                if (pt && pt !== "semua") wilayahText = pt.toUpperCase();
+                else if (thn && thn !== "semua") tahunText = thn.toUpperCase(); 
+                
+                ptCount = new Set(appState.filteredRealisasi.map(d=>d.namaPT)).size;
+                tabCount = appState.filteredRealisasi.reduce((a,b)=>a+b.jumlahTabung, 0);
+
+                if (titleEl) { titleEl.textContent = "LAPORAN DATA REALISASI"; titleEl.style.textAlign = 'center'; }
+
+                metaBottomEl.innerHTML = ''; 
+                metaBottomEl.innerHTML = `
+                    <div class="print-meta-grid">
+                        <span class="print-meta-label">Wilayah :</span> <span>: ${wilayahText}</span>
+                        <span class="print-meta-label">Tahun :</span> <span>: ${tahunText}</span>
+                        <span class="print-meta-label">Total PT :</span> <span>: ${ptCount}</span>
+                    </div>
+                    <div class="print-meta-grid">
+                        <span class="print-meta-label">Total Tabung :</span> <span>: ${tabCount.toLocaleString('id-ID')}</span>
+                    </div>
+                `;
+
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const timeStr = now.toLocaleTimeString('id-ID');
+                timeEl.textContent = "Dicetak pada: " + dateStr + " - Pukul " + timeStr;
+            }
+        };
+
+        window.printAllData = function() {
+            updatePrintSummary();
+            
+            let activeTbodyId = '';
+            let activeViewName = '';
+
+            if (document.getElementById('view-data').classList.contains('active')) {
+                activeTbodyId = 'table-body';          
+                activeViewName = 'data';
+            } else if (document.getElementById('view-pencarian').classList.contains('active')) {
+                activeTbodyId = 'search-table-body';     
+                activeViewName = 'pencarian';
+            } else if (document.getElementById('view-realisasi').classList.contains('active')) {
+                activeTbodyId = 'summary-realisasi-body'; 
+                activeViewName = 'realisasi';
+            }
+
+            if (activeTbodyId) {
+                const originalHtml = document.getElementById(activeTbodyId).innerHTML;
+                let fullHtml = '';
+                const dataToPrint = appState.filteredRealisasi; 
+
+                if (activeViewName === 'data' || activeViewName === 'pencarian') {
+                    dataToPrint.forEach((r, i) => {
+                        let rowContent = '';
+                        const rowNumber = (activeViewName === 'data') ? r.no : (i + 1);
+                        const inisialCell = (activeViewName === 'data') ? "<td>" + r.inisialPT + "</td>" : '';
+                        const jumlahStyle = "font-weight: bold; color: #000000; text-align: left;";
+
+                        rowContent = "<td>" + rowNumber + "</td><td>" + r.namaPT + "</td><td>" + r.namaPangkalan + "</td><td>" + r.alamat + "</td><td>" + r.kelurahan + "</td><td>" + r.kecamatan + "</td><td>" + r.kabupaten + "</td><td>" + r.provinsi + "</td><td style='" + jumlahStyle + "'>" + r.jumlahTabung.toLocaleString('id-ID') + "</td><td>" + r.periode + "</td>" + inisialCell + "<td></td>";
+                        fullHtml += "<tr>" + rowContent + "</tr>";
+                    });
+                } else if (activeViewName === 'realisasi') {
+                    window.print();
+                    return;
+                }
+
+                if (fullHtml !== '') {
+                    document.getElementById(activeTbodyId).innerHTML = fullHtml;
+                    window.print();
+
+                    setTimeout(() => {
+                        document.getElementById(activeTbodyId).innerHTML = originalHtml;
+                        if(activeViewName === 'data') renderRealisasiTable();
+                        if(activeViewName === 'pencarian') renderAdvSearch(); 
+                    }, 500);
+                }
+            }
+        };
+
+        window.handlePDF = function() {
+            updatePrintSummary();
+            showToast("Mohon pilih 'Save as PDF'...", "info");
+            setTimeout(() => { window.print(); }, 500);
+        };
+
+        window.showSettingsTab = function(t) {
+            document.querySelectorAll('#view-pengaturan .btn').forEach(b => {
+                if (b.id !== 'set-username') { b.classList.remove('btn-primary'); b.classList.add('btn-outline'); }
+            });
+            const target = event.target;
+            if(target) {
+                target.classList.remove('btn-outline');
+                target.classList.add('btn-primary');
+            }
+            document.getElementById('set-tab-user').classList.add('hidden');
+            document.getElementById('set-tab-pt').classList.add('hidden');
+            document.getElementById('set-tab-pass').classList.add('hidden');
+            document.getElementById('set-tab-'+t).classList.remove('hidden');
+        };
+
+        // --- FIX PASSWORD BUTTON HANDLER (FINAL & LOCAL UPDATE) ---
+        window.handleUpdatePassword = async function(e) {
+            e.preventDefault();
+            
+            if (!appState.currentUser) {
+                showToast("Sesi Anda habis. Silakan login ulang.", "error");
+                return;
+            }
+
+            const oldPassInput = document.getElementById('old-pass');
+            const newPassInput = document.getElementById('new-pass');
+            const confirmPassInput = document.getElementById('confirm-pass');
+            
+            if(!oldPassInput || !newPassInput || !confirmPassInput) {
+                showToast("Form tidak lengkap.", "error");
+                return;
+            }
+
+            const oldPass = oldPassInput.value;
+            const newPass = newPassInput.value;
+            const confirmPass = confirmPassInput.value;
+            
+            if (newPass !== confirmPass) {
+                showToast("Konfirmasi Password tidak cocok!", "error");
+                return;
+            }
+            if (newPass.length < 6) {
+                showToast("Password minimal 6 karakter!", "error");
+                return;
+            }
+
+            if (oldPass !== appState.currentUser.password) {
+                showToast("Password Lama salah!", "error");
+                return;
+            }
+
+            showToast("Sedang memproses perubahan password...", "info");
+
+            try {
+                // Kirim ke Backend
+                const payload = {
+                    action: "updatePassword",
+                    username: appState.currentUser.username,
+                    oldPassword: oldPass,
+                    newPassword: newPass
+                };
+
+                // Kirim Fetch
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(payload)
+                });
+
+                // UPDATE DATA LOKAL (AGAR BISA LOGIN ULANG TANPA EDIT KODE)
+                const userIndex = simulatedUsers.findIndex(u => u.username === appState.currentUser.username);
+                if (userIndex !== -1) {
+                    simulatedUsers[userIndex].password = newPass;
+                    const localUserIndex = appState.userData.findIndex(u => u.username === appState.currentUser.username);
+                    if (localUserIndex !== -1) appState.userData[localUserIndex].password = newPass;
+                    appState.currentUser.password = newPass;
+                }
+
+                showToast("Password Berhasil Diperbarui (Lokal & Backend).", "success");
+                document.getElementById('form-pass').reset();
+                
+                setTimeout(() => {
+                    if(confirm("Password berhasil diperbarui. Apakah Anda ingin login ulang?")) {
+                        location.reload();
+                    }
+                }, 1000);
+
+            } catch (error) {
+                console.error("Gagal Update Password:", error);
+                showToast("Terjadi kesalahan saat mengubah password.", "error");
+            }
+        };
+        
+        window.openPangkalanModal = function() {
+            document.getElementById('pangkalan-form').reset();
+            document.getElementById('data-no').value = "";
+            document.getElementById('modal-title').textContent = "Tambah Data Pangkalan";
+            document.getElementById('pangkalan-modal').classList.remove('hidden');
+        }
+        window.openUserModal = function() { 
+            document.getElementById('user-form').reset(); 
+            document.getElementById('edit-user-id').value = ""; 
+            document.getElementById('user-modal').classList.remove('hidden');
+        }
+        window.openPTModal = function() { 
+            document.getElementById('pt-modal').classList.remove('hidden');
+        }
+        window.closeMonitor = function() { 
+            document.getElementById('monitor-modal').classList.add('hidden'); 
+        };
+
+        window.openMonitor = function(isLoading) {
+            document.getElementById('monitor-modal').classList.remove('hidden');
+            if(isLoading) { document.getElementById('monitor-spinner').style.display = 'block'; document.getElementById('monitor-result').classList.add('hidden'); }
+            else { document.getElementById('monitor-spinner').style.display = 'none'; document.getElementById('monitor-result').classList.remove('hidden'); }
+        };
+        
+        window.closeModal = closeModal;
+        window.openUserModal = openUserModal;
+        window.openPTModal = openPTModal;
+        window.openPangkalanModal = openPangkalanModal;
+        window.openMonitor = openMonitor;
+        window.closeMonitor = closeMonitor;
+        
+        window.parseCSV = function(text) {
+            const lines = text.trim().split('\n');
+            const result = [];
+            for (let i =0; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                if(row.length >1) result.push(row);
+            }
+            return result;
+        };
+
+        window.saveUser = function(e) {
+            e.preventDefault();
+            showToast("User Berhasil Ditambahkan!", "success");
+            window.closeModal('user-modal');
+            document.getElementById('user-form').reset();
+            window.fetchUserData();
+        };
+        window.editUser = function(id) { showToast("Edit User (Simulasi)", "success"); }
+        window.delUser = function(id) { showToast("Del User (Simulasi)", "success"); }
+        window.savePT = function(e) {
+            e.preventDefault();
+            showToast("PT Data Disimpan (Simulasi)", "success");
+            window.closeModal('pt-modal');
+        };
+        window.editPT = function(id) { showToast("Edit PT (Simulasi)", "success"); }
+        window.delPT = function(id) { showToast("Del PT (Simulasi)", "success"); }
+        window.handlePangkalanSubmit = function(e) {
+            e.preventDefault();
+            const no = document.getElementById('data-no').value;
+            const data = { no, namaPT: document.getElementById('data-pt').value, namaPangkalan: document.getElementById('data-pangkalan').value, alamat: document.getElementById('data-alamat').value, kelurahan: document.getElementById('data-kel').value, kecamatan: document.getElementById('data-kec').value, kabupaten: document.getElementById('data-kab').value, provinsi: document.getElementById('data-prov').value, jumlahTabung: document.getElementById('data-tabung').value, periode: document.getElementById('data-periode').value, inisialPT: document.getElementById('data-inisial').value };
+            window.sendToSheet(no ? 'edit' : 'add', data);
+        };
+        window.sendToSheet = function(action, data) {
+            showToast("Fitur ini akan diupdate di Google Apps Script.", "info");
+        };
+        window.editPangkalan = function(no) {
+            const r = appState.realisasiData.find(d => d.no == no);
+            if (!r) return;
+            document.getElementById('data-no').value = r.no;
+            document.getElementById('data-pt').value = r.namaPT;
+            document.getElementById('data-pangkalan').value = r.namaPangkalan;
+            document.getElementById('data-alamat').value = r.alamat;
+            document.getElementById('data-kel').value = r.kelurahan;
+            document.getElementById('data-kec').value = r.kecamatan;
+            document.getElementById('data-kab').value = r.kabupaten;
+            document.getElementById('data-prov').value = r.provinsi;
+            document.getElementById('data-tabung').value = r.jumlahTabung;
+            document.getElementById('data-periode').value = r.periode;
+            document.getElementById('data-inisial').value = r.inisialPT;
+            document.getElementById('modal-title').textContent = "Edit Data Pangkalan";
+            document.getElementById('pangkalan-modal').classList.remove('hidden');
+        };
+        window.deletePangkalan = function(no) {
+            showToast("Menghapus data No: " + no + "...", "warning");
+            window.sendToSheet('delete', { no });
+        };
+        window.resetDataFilters = function() {
+            document.getElementById('data-filter-bulan').value = "Semua";
+            document.getElementById('data-filter-tahun').value = "Semua";
+            document.getElementById('data-filter-pt').value = "Semua";
+            window.applyDataFilters();
+            showToast("Filter direset", "info");
+        };
+        window.filterUnreadableNumbers = function() {
+            showToast("Memeriksa angka yang tidak terbaca atau 0...", "info");
+            const zeros = appState.filteredRealisasi.filter(d => d.jumlahTabung === 0);
+            if(zeros.length > 0) {
+                showToast(`Ditemukan ${zeros.length} data dengan jumlah 0.`, "warning");
+            } else {
+                showToast("Tidak ada anomali angka 0.", "success");
+            }
+        };
+
+        // --- PENGHUBUNG FORM (Event Listeners) ---
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("App Loaded (Hardcoded Dropdowns + Admin Staf Checklist + Password hiswana153 + HIDDEN SETTINGS MENU FOR STAFF + SECURE LOGIN INPUTS)");
+
+            const userForm = document.getElementById('user-form');
+            if(userForm) userForm.onsubmit = window.saveUser;
+
+            const pangkalanForm = document.getElementById('pangkalan-form');
+            if(pangkalanForm) pangkalanForm.onsubmit = window.handlePangkalanSubmit;
+
+            const passForm = document.getElementById('form-pass');
+            if(passForm) {
+                passForm.addEventListener('submit', window.handleUpdatePassword);
+            } else {
+                console.error("Form ID 'form-pass' tidak ditemukan saat DOMContentLoaded.");
+            }
+        });
+
+    </script>
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <section id="login-page">
+        <div class="login-card">
+            <div class="login-icon">
+                <i class="fas fa-user-lock fa-5x" style="color:var(--secondary-color)"></i>
+            </div>
+            
+            <div class="login-header">
+                <h2>LOGIN</h2>
+                <p>Data Realisasi Agen dan Pangkalan</p>
+            </div>
+            
+            <label>Pilih Role</label>
+            <select id="role">
+                <option value="">-- Pilih Role --</option>
+                <option value="admin" selected>Administrator</option>
+                <option value="admin/staf">Admin / Staf</option>
+                <option value="pt">PT / Agen</option>
+            </select>
+            <label>Username</label>
+            <!-- PERBAIKAN KEAMANAN: VALUE DIHAPUS, PLACEHOLDER DITAMBAH -->
+            <input type="text" id="username" placeholder="Masukkan Username..." value="">
+            <label>Password</label>
+            <!-- PERBAIKAN KEAMANAN: VALUE DIHAPUS, PLACEHOLDER DITAMBAH -->
+            <input type="password" id="password" placeholder="Masukkan Password..." value="">
+            
+            <button type="button" class="btn btn-primary w-full mt-4" onclick="window.doLogin()">MASUK <i class="fas fa-arrow-right"></i></button>
+            
+            <div id="login-hint" class="mt-4 p-4 hidden" style="background:#f0f0f0; font-size:0.8rem; text-align:left; border-radius:4px;">
+                <strong>Info Default Login (Demo):</strong><br>
+                Admin: <code>admin</code> / <code>admin123</code><br>
+                Staf: <code>staf</code> / <code>hiswana153</code>
+            </div>
+            <div class="mt-4 text-center" style="font-size: 0.8rem; color:#888;">&copy; 2026 DPC Banten Hiswana Migas</div>
+        </div>
+    </section>
+
+    <section id="main-app" class="hidden">
+        <header>
+            <div class="header-brand">
+                <h1>DATA REALISASI AGEN DAN PANGKALAN DPC BANTEN HISWANA MIGAS</h1>
+                <small>Sistem Monitoring Distribusi LPG 3Kg</small>
+            </div>
+            <div class="user-profile">
+                <div class="text-right hidden-mobile">
+                    <strong id="user-display-name">User</strong><br>
+                    <small id="user-display-role">Role</small>
+                </div>
+                <div class="user-avatar" id="user-avatar">A</div>
+                <button type="button" id="btn-logout" class="btn btn-outline btn-sm no-print" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <nav class="no-print">
+            <ul class="nav-tabs">
+                <li class="nav-item"><a class="nav-link active" id="nav-data" onclick="window.switchTab('data')"><i class="fas fa-database mr-2"></i> Data</a></li>
+                <li class="nav-item"><a class="nav-link" id="nav-pencarian" onclick="window.switchTab('pencarian')"><i class="fas fa-search mr-2"></i> Pencarian</a></li>
+                <li class="nav-item"><a class="nav-link" id="nav-realisasi" onclick="window.switchTab('realisasi')"><i class="fas fa-chart-line mr-2"></i> Realisasi</a></li>
+                <li class="nav-item"><a class="nav-link" id="nav-pengaturan" onclick="window.switchTab('pengaturan')"><i class="fas fa-cogs mr-2"></i> Pengaturan</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            
+            <div id="print-header" class="print-only">
+                <h1 id="print-title-main">LAPORAN DATA REALISASI</h1>
+                <div id="print-meta-real-bottom"></div>
+                <div id="print-timestamp">Dicetak pada: -</div>
+            </div>
+
+            <div id="view-data" class="section-view active">
+                
+                <div class="stats-grid no-print">
+                    <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-building"></i></div><div class="stat-info"><h3 id="stat-total-pt">0</h3><p>Total PT</p></div></div>
+                    <div class="stat-card green"><div class="stat-icon"><i class="fas fa-home"></i></div><div class="stat-info"><h3 id="stat-total-pangkalan">0</h3><p>Total Pangkalan</p></div></div>
+                    <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-gas-pump"></i></div><div class="stat-info"><h3 id="stat-total-tabung">0</h3><p>Total Tabung</p></div></div>
+                    <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-chart-pie"></i></div><div class="stat-info"><h3 id="stat-avg-pt">0</h3><p>Rata-rata / PT</p></div></div>
+                </div>
+
+                <div class="search-panel no-print">
+                    <h4><i class="fas fa-filter"></i> Pencarian Cepat & Filter</h4>
+                    <div class="filter-grid">
+                        <div><label>Bulan</label>
+                            <select id="data-filter-bulan" onchange="window.applyDataFilters()">
+                                <option value="Semua">== SEMUA (ALL) ==</option>
+                                <option value="Jan">Januari</option>
+                                <option value="Feb">Februari</option>
+                                <option value="Mar">Maret</option>
+                                <option value="Apr">April</option>
+                                <option value="Mei">Mei</option>
+                                <option value="Jun">Juni</option>
+                                <option value="Jul">Juli</option>
+                                <option value="Agt">Agustus</option>
+                                <option value="Sep">September</option>
+                                <option value="Okt">Oktober</option>
+                                <option value="Nov">November</option>
+                                <option value="Des">Desember</option>
+                            </select>
+                        </div>
+                        <div><label>Tahun</label>
+                            <select id="data-filter-tahun" onchange="window.applyDataFilters()">
+                                <option value="Semua">Semua Tahun</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                            </select>
+                        </div>
+                        <div><label>Nama PT</label><select id="data-filter-pt" onchange="window.applyDataFilters()"><option value="Semua">Semua PT</option></select></div>
+                    </div>
+                    <div class="action-bar justify-between">
+                        <div class="flex gap-2">
+                            <button type="button" id="btn-cari-data" class="btn btn-primary" onclick="window.applyDataFilters()"><i class="fas fa-search"></i> Cari</button>
+                            <button type="button" id="btn-refresh-realisasi" class="btn btn-info" onclick="window.refreshRealisasiData()"><i class="fas fa-sync-alt"></i> Refresh Realisasi</button>
+                            <button type="button" id="btn-refresh-user" class="btn btn-warning" onclick="window.refreshUserData()"><i class="fas fa-users"></i> Refresh User</button>
+                            <button type="button" id="btn-reset-data" class="btn btn-secondary" onclick="window.resetDataFilters()"><i class="fas fa-undo"></i> Reset</button>
+                            <button type="button" id="btn-cek-angka" class="btn btn-danger" onclick="window.filterUnreadableNumbers()"><i class="fas fa-exclamation-triangle"></i> Cek 0</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" id="btn-import-excel" class="btn btn-primary" onclick="document.getElementById('import-file').click()"><i class="fas fa-file-upload"></i> Import Excel</button>
+                            <input type="file" id="import-file" accept=".csv" style="display:none;" onchange="window.handleImport(this)">
+                            <button type="button" id="btn-export-to-excel-main" class="btn btn-success" onclick="window.downloadExcel()"><i class="fas fa-file-excel"></i> Export To Excel</button>
+                            <button type="button" id="btn-clean-ghost" class="btn btn-danger" onclick="window.cleanTargetPTs()"><i class="fas fa-broom"></i> Hapus Sampah</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" id="btn-cetak-main" class="btn btn-outline" onclick="window.printAllData()"><i class="fas fa-print"></i> Cetak</button>
+                            <button type="button" id="btn-pdf-main" class="btn btn-danger" onclick="window.handlePDF()"><i class="fas fa-file-pdf"></i> Cetak PDF</button>
+                            <button type="button" id="btn-tambah-pangkalan" class="btn btn-success admin-only" onclick="window.openPangkalanModal()"><i class="fas fa-plus"></i> Tambah</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table id="main-table">
+                            <thead>
+                                <tr>
+                                    <th width="40">No</th><th>Nama PT</th><th>Nama Pangkalan</th><th>Alamat Pangkalan</th><th>Kelurahan</th><th>Kecamatan</th><th>Kabupaten</th><th>Provinsi</th><th>Jumlah Tabung</th><th>Periode</th><th>Inisial PT</th><th width="100" class="no-print">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="pagination flex justify-between items-center p-4 no-print">
+                        <span id="page-info" style="font-size:0.9rem; color:#666;">Menampilkan 0 data</span>
+                        <div class="flex gap-2"><button type="button" id="prev-btn" class="btn btn-sm btn-outline" onclick="window.changePage(-1)">&laquo; Prev</button><button type="button" id="next-btn" class="btn btn-sm btn-outline" onclick="window.changePage(1)">Next &raquo;</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-pencarian" class="section-view">
+                <div class="search-panel no-print">
+                    <h4><i class="fas fa-search-plus"></i> Filter Detail Pencarian</h4>
+                    <div class="filter-grid">
+                        <div><label>Provinsi</label><select id="adv-filter-prov" disabled><option value="BANTEN">BANTEN</option></select></div>
+                        <div><label>Kabupaten</label><select id="adv-filter-kab" onchange="window.renderAdvKab()"><option value="Semua">Semua</option></select></div>
+                        <div><label>Kecamatan</label><select id="adv-filter-kec" onchange="window.renderAdvKec()"><option value="Semua">Semua</option></select></div>
+                        <div><label>Kelurahan</label><select id="adv-filter-kel" onchange="window.renderAdvKel()"><option value="Semua">Semua</option></select></div>
+                        <div><label>Nama PT</label><select id="adv-filter-pt"><option value="Semua">Semua PT</option></select></div>
+                        <div><label>Bulan</label>
+                            <select id="adv-filter-bulan" onchange="window.renderAdvSearch()">
+                                <option value="Semua">== SEMUA (ALL) ==</option>
+                                <option value="Jan">Januari</option>
+                                <option value="Feb">Februari</option>
+                                <option value="Mar">Maret</option>
+                                <option value="Apr">April</option>
+                                <option value="Mei">Mei</option>
+                                <option value="Jun">Juni</option>
+                                <option value="Jul">Juli</option>
+                                <option value="Agt">Agustus</option>
+                                <option value="Sep">September</option>
+                                <option value="Okt">Oktober</option>
+                                <option value="Nov">November</option>
+                                <option value="Des">Desember</option>
+                            </select>
+                        </div>
+                        <div><label>Tahun</label>
+                            <select id="adv-filter-tahun" onchange="window.renderAdvSearch()">
+                                <option value="Semua">Semua</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="action-bar">
+                        <button type="button" id="btn-cari-adv" class="btn btn-primary" onclick="window.renderAdvSearch()"><i class="fas fa-search"></i> Cari</button>
+                        <button type="button" id="btn-reset-adv" class="btn btn-secondary" onclick="window.resetAdvFilters()"><i class="fas fa-undo"></i> Reset semua</button>
+                        <button type="button" id="btn-cetak-search" class="btn btn-primary" onclick="window.printAllData()"><i class="fas fa-print"></i> Cetak A4</button>
+                    </div>
+                </div>
+
+                <div id="print-summary-search" class="realisasi-summary-bar">
+                    <div class="summary-item">
+                        <span class="summary-label">Provinsi :</span>
+                        <span class="summary-value" id="print-prov-search">BANTEN</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Kabupaten :</span>
+                        <span class="summary-value" id="print-kab-search">Semua</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total PT :</span>
+                        <span class="summary-value" id="print-pt-search">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total Tabung :</span>
+                        <span class="summary-value" id="print-tabung-search">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Jumlah Pangkalan :</span>
+                        <span class="summary-value" id="print-pangkalan-search">0</span>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table id="search-result-table">
+                            <thead><tr><th width="40">No</th><th>Nama PT</th><th>Nama Pangkalan</th><th>Alamat Pangkalan</th><th>Kelurahan</th><th>Kecamatan</th><th>Kabupaten</th><th>Provinsi</th><th>Jumlah Tabung</th><th>Periode</th></tr></thead>
+                            <tbody id="search-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-realisasi" class="section-view">
+                <div class="search-panel no-print">
+                    <h4><i class="fas fa-chart-bar"></i> Filter Realisasi Tahunan</h4>
+                    <div class="filter-grid">
+                        <div><label>Provinsi</label><select id="real-filter-prov" disabled><option value="BANTEN">BANTEN</option></select></div>
+                        <div><label>Wilayah (Kabupaten)</label><select id="real-filter-kab" onchange="window.renderRealisasiView()"><option value="Semua">Semua</option></select></div>
+                        <div class="hidden"><label>Bulan</label>
+                            <select id="real-filter-bulan">
+                                <option value="Semua">== SEMUA (ALL) ==</option>
+                                <option value="Jan">Januari</option>
+                                <option value="Feb">Februari</option>
+                                <option value="Mar">Maret</option>
+                                <option value="Apr">April</option>
+                                <option value="Mei">Mei</option>
+                                <option value="Jun">Juni</option>
+                                <option value="Jul">Juli</option>
+                                <option value="Agt">Agustus</option>
+                                <option value="Sep">September</option>
+                                <option value="Okt">Oktober</option>
+                                <option value="Nov">November</option>
+                                <option value="Des">Desember</option>
+                            </select>
+                        </div>
+                        <div><label>Tahun</label>
+                            <select id="real-filter-tahun" onchange="window.renderRealisasiView()">
+                                <option value="Semua">Semua</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                            </select>
+                        </div>
+                        <div><label>Nama PT</label><select id="real-filter-pt" onchange="window.renderRealisasiView()"><option value="Semua">Semua PT</option></select></div>
+                    </div>
+                    <div class="action-bar justify-between">
+                        <div class="flex gap-2">
+                            <button type="button" id="btn-cari-real" class="btn btn-primary" onclick="window.renderAdvSearch()"><i class="fas fa-search"></i> Cari</button>
+                            <button type="button" id="btn-refresh-real" class="btn btn-info" onclick="window.refreshRealisasiData()"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+                            <button type="button" id="btn-reset-real" class="btn btn-secondary" onclick="window.resetAdvFilters()"><i class="fas fa-undo"></i> Reset</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" id="btn-cetak-realisasi" class="btn btn-primary" onclick="window.printAllData()"><i class="fas fa-print"></i> Cetak Laporan</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="realisasi-summary-bar" class="realisasi-summary-bar">
+                    <div class="summary-item">
+                        <span class="summary-label">Tahun :</span>
+                        <span class="summary-value" id="real-print-year">SEMUA TAHUN</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total Tabung :</span>
+                        <span class="summary-value" id="real-print-tabung">0</span>
+                    </div>
+                </div>
+
+                <h5 style="margin-top:0; color:var(--primary-color); font-weight:600; margin-bottom: 10px; text-align: left !important;"><i class="fas fa-th-large"></i> Ringkasan Alokasi Bulanan (Jan-Des)</h5>
+                
+                <div class="table-container" id="summary-realisasi-table-container">
+                    <div class="table-responsive">
+                        <table id="summary-realisasi-table">
+                            <thead><tr><th>No</th><th>Nama PT</th><th>Wilayah</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>Mei</th><th>Jun</th><th>Jul</th><th>Agt</th><th>Sep</th><th>Okt</th><th>Nov</th><th>Des</th></tr></thead>
+                            <tbody id="summary-realisasi-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-pengaturan" class="section-view">
+                <div class="card mb-4 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="user-avatar" style="width:60px; height:60px; font-size:1.5rem;" id="set-avatar">A</div>
+                        <div>
+                            <h2 id="set-role-name">Administrator</h2>
+                            <p id="set-username">Username: <strong>admin</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 mb-4 no-print">
+                    <button type="button" id="tab-user" class="btn btn-primary" onclick="window.showSettingsTab('user')"><i class="fas fa-users"></i> Kelola User</button>
+                    <button type="button" id="tab-pt" class="btn btn-outline" onclick="window.showSettingsTab('pt')"><i class="fas fa-city"></i> Kelola Anggota / PT</button>
+                    <button type="button" id="btn-nav-pass" class="btn-outline" onclick="window.showSettingsTab('pass')"><i class="fas fa-key"></i> Ubah Password</button>
+                </div>
+
+                <div id="set-tab-user" class="card">
+                    <div class="flex justify-between items-center mb-4 border-bottom">
+                        <div>
+                            <h3>Daftar User Sistem</h3>
+                            <small class="text-muted" style="display:block; margin-top:-5px;">Data sinkronisasi dengan Google Sheet</small>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" id="btn-refresh-users" class="btn btn-info btn-sm" onclick="window.fetchUserData()">
+                                <i class="fas fa-sync-alt"></i> Refresh List
+                            </button>
+                            <button type="button" id="btn-add-user" class="btn btn-success btn-sm" onclick="window.openUserModal()">
+                                <i class="fas fa-plus"></i> Tambah User
+                            </button>
+                        </div>
+                    
+                    <div class="table-container mb-4" style="max-height: 500px; overflow-y: auto;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 10px; background: #f8f9fa;">ID</th>
+                                    <th style="padding: 10px; background: #f8f9fa;">Nama</th>
+                                    <th style="padding: 10px; background: #f8f9fa;">Username</th>
+                                    <th style="padding: 10px; background: #f8f9fa;">Role</th>
+                                    <th style="padding: 10px; background: #f8f9fa;">PT Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="set-tab-pt" class="card hidden">
+                    <div class="flex justify-between items-center mb-4 border-bottom"><h3>Daftar PT / Agen</h3><button type="button" id="btn-add-pt" class="btn btn-success btn-sm" onclick="window.openPTModal()"><i class="fas fa-plus"></i> Tambah PT</button></div>
+                    <div class="card-grid" id="pt-list-container"></div>
+                </div>
+
+                <div id="set-tab-pass" class="card hidden" style="max-width: 500px;">
+                    <h3>Ubah Password Saya</h3>
+                    <form id="form-pass" class="mt-4">
+                        <label>Password Lama</label><input type="password" id="old-pass" required>
+                        <label>Password Baru</label><input type="password" id="new-pass" required>
+                        <label>Konfirmasi Password</label><input type="password" id="confirm-pass" required>
+                        <button type="submit" class="btn btn-primary w-full mt-4">Simpan Password</button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+        
+        <footer class="text-center p-4 bg-white border-top no-print" style="font-size: 0.8rem; color: #888;">
+            &copy; 2026 DPC Banten Hiswana Migas. Sistem Stabil & Aman.
+        </footer>
+    </section>
+
+    <!-- Modals -->
+    <div id="pangkalan-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h3 class="mb-4" id="modal-title">Tambah Data Pangkalan</h3>
+            <form id="pangkalan-form">
+                <input type="hidden" id="data-no">
+                <div class="filter-grid">
+                    <div><label>Nama PT</label><input type="text" id="data-pt" list="pt-list" required><datalist id="pt-list"></datalist></div>
+                    <div><label>Nama Pangkalan</label><input type="text" id="data-pangkalan" required></div>
+                </div>
+                <div class="mb-2"><label>Alamat Pangkalan</label><input type="text" id="data-alamat" required></div>
+                <div class="filter-grid">
+                    <div><label>Kelurahan</label><input type="text" id="data-kel" required></div>
+                    <div><label>Kecamatan</label><input type="text" id="data-kec" required></div>
+                </div>
+                <div class="filter-grid">
+                    <div><label>Kabupaten</label><input type="text" id="data-kab" required></div>
+                    <div><label>Provinsi</label><input type="text" id="data-prov" value="BANTEN"></div>
+                </div>
+                <div class="filter-grid">
+                    <div><label>Jumlah Tabung</label><input type="number" id="data-tabung" required></div>
+                    <div><label>Periode</label><input type="text" id="data-periode" placeholder="Januari 2025" required></div>
+                </div>
+                <div class="mb-2"><label>Inisial PT</label><input type="text" id="data-inisial" placeholder="PERT" required></div>
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" id="btn-close-modal-pangkalan" class="btn btn-secondary" onclick="window.closeModal('pangkalan-modal')">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-pangkalan"><i class="fas fa-save"></i> Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="user-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h3 class="mb-4" id="user-modal-title">Tambah User</h3>
+            <form id="user-form">
+                <input type="hidden" id="edit-user-id">
+                <label>Nama Lengkap</label><input type="text" id="input-user-name" required>
+                <label>Username</label><input type="text" id="input-user-username" required>
+                <label>Password</label><input type="text" id="input-user-password" placeholder="Kosongkan jika tidak ubah">
+                <label>Role</label>
+                <select id="input-user-role">
+                    <option value="admin">Administrator</option>
+                    <option value="admin/staf">Admin / Staf</option>
+                    <option value="pt">PT / Agen</option>
+                </select>
+                <label>Nama PT Terkait (Jika Role PT)</label><input type="text" id="input-user-pt" placeholder="Samakan dengan Data PT">
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" class="btn btn-secondary" onclick="window.closeModal('user-modal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="pt-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h3 class="mb-4" id="pt-modal-title">Tambah PT</h3>
+            <form id="pt-form">
+                <input type="hidden" id="edit-pt-id">
+                <label>Nama PT</label><input type="text" id="input-pt-name" required>
+                <label>Kode / Username PT</label><input type="text" id="input-pt-code" required>
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" class="btn btn-secondary" onclick="window.closeModal('pt-modal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="monitor-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h3><i class="fas fa-file-import"></i> Status Monitoring Import CSV</h3>
+            <div id="monitor-spinner" class="text-center mt-4 mb-4" style="display:none;">
+                <i class="fas fa-spinner fa-spin fa-2x" style="color:var(--primary-color)"></i><br>
+                Sedang Memproses Data di Google Sheet...<br><small>Mohon tunggu sebentar.</small>
+            </div>
+            <div id="monitor-result" class="hidden">
+                <div class="card mb-4" style="border-left: 5px solid var(--success);">
+                    <h4>Status: <span style="color:var(--success)">Proses Selesai</span></h4>
+                    <div class="filter-grid">
+                        <div><small>Total Baris Data</small><strong id="mon-total">0</strong></div>
+                        <div>
+                            <small>Berhasil Masuk (Valid)</small><strong id="mon-success" style="font-size:1.2rem; color:var(--success)">0</strong></div>
+                        </div>
+                        <div>
+                            <small>Duplikat/Ditolak</small><strong id="mon-failed" style="font-size:1.2rem; color:var(--danger)">0</strong></div>
+                        </div>
+                    </div>
+                    <div id="mon-message" class="mt-2 p-2 bg-light" style="border-radius:4px; font-size:0.9rem;"></div>
+                </div>
+                <h4 class="mb-2">Daftar Error Detail (Jika Ada)</h4>
+                <div id="monitor-errors" class="card" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; background: #fff;">
+                    <div class="text-center p-4 text-muted" style="font-size:0.9rem;">Tidak ada error. Semua data berhasil diimport.</div>
+                </div>
+                <button type="button" onclick="window.closeMonitor()" class="btn btn-primary w-full mt-4">Tutup Monitoring</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
