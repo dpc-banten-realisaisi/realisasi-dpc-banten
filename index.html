@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Data Realisasi - FINAL VERSION</title>
+    <title>Sistem Data Realisasi - FINAL VERSION (MONITORING STYLE)</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- CSS STYLES -->
+    <!-- CSS STYLES (DIPERBARUI DENGAN STYLE MONITORING BARU) -->
     <style>
         :root {
             --primary-color: #0056b3;
@@ -299,12 +299,104 @@
             #main-table th:nth-child(4), #main-table td:nth-child(4) { display: none !important; border: none !important; }
             .action-buttons, th:last-child, td:last-child { display: none !important; }
         }
+
+        /* --- CSS MONITORING MODAL (UPDATE RAPIH) --- */
+        .monitor-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .monitor-icon-lg {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .monitor-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .monitor-card {
+            background: #f8f9fa;
+            padding: 1rem 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .monitor-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .monitor-metric-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .monitor-metric-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .monitor-metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar untuk Error Log */
+        .monitor-error-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #2b2b2b; /* Background gelap ala coding */
+            color: #00ff00; /* Teks hijau matrix */
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid #444;
+            text-align: left;
+        }
+
+        .monitor-error-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        .monitor-error-list::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        .monitor-error-list::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
+        .monitor-error-list::-webkit-scrollbar-thumb:hover {
+            background: #777;
+        }
+
+        /* Helper Utility Classes for Modal */
+        .text-success { color: var(--success); }
+        .text-danger { color: var(--danger); }
+        .text-secondary { color: #6c757d; }
+        .bg-light { background-color: #f8f9fa; }
+        .py-5 { padding-top: 3rem; padding-bottom: 3rem; }
+        .h3 { font-size: 1.5rem; font-weight: bold; }
+        .font-weight-bold { font-weight: bold; }
     </style>
 
-    <!-- JAVASCRIPT (FULL LOGIC + SECURE LOGIN) -->
+    <!-- JAVASCRIPT (FULL LOGIC + SECURE LOGIN + SERVER SYNC + SMART CSV IMPORT + NEW URL) -->
     <script>
-        // --- CONFIG ---
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMAxaCDanYcHHwOMJf6WAPUjsdwbrWvZNL5BZVPDyOtz86imC7Uxh0QSX7lhn1Gxof/exec";
+        // --- CONFIG (URL APPS SCRIPT DIUPDATE KE VERSI FIX) ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNYEYkH1wavINVh3jZ9gVhjxEWAbVPnxFcxGr5hI6SIoq4x1hAYyQHdsX9oAp82x3x/exec";
         
         // --- VARIABLES ---
         const fullMonths = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -315,7 +407,7 @@
 
         // --- DATA USER SIMULASI (PASSWORD BISA DIUBAH LOKAL) ---
         let simulatedUsers = [
-            { id: 1, name: "Administrator", username: "admin", password: "uus687264", role: "admin", ptName: null },
+            { id: 1, name: "Administrator", username: "admin", password: "admin123", role: "admin", ptName: null },
             { id: 2, name: "Admin PT", username: "admin_pt", password: "123", role: "pt", ptName: "PT Pertamina" },
             { id: 3, name: "Agan User", username: "user1", password: "123", role: "pt", ptName: "PT Samudera" },
             { id: 4, name: "Supervisor", username: "super", password: "123", role: "admin", ptName: null },
@@ -368,7 +460,7 @@
                 // --- FIX: LOGIN ADMIN/STAF (PASSWORD BARU: hiswana153) ---
                 if (user === 'staf' && pass === 'hiswana153' && role === 'admin/staf') {
                     setupAppSession({
-                        id: 5, name: "Staf Admin", username: "staf", password: "hiswana153", role: "admin/staf", ptName: null
+                        id:5, name: "Staf Admin", username: "staf", password: "hiswana153", role: "admin/staf", ptName: null
                     });
                     return;
                 }
@@ -825,13 +917,17 @@
             fillSelect(ptId, pts);
         };
 
+        // ==========================================
+        // --- FUNGSI IMPORT CSV (ROBUST FRONTEND PARSER) ---
+        // ==========================================
         window.handleImport = function(input) {
             const file = input.files[0];
             const btn = document.getElementById('btn-import-excel');
             const originalText = btn.innerHTML;
 
             if (!file) { showToast("Silakan pilih file Excel/CSV dulu.", "error"); return; }
-            if (!file.name.endsWith('.csv')) { showToast("Format file harus .csv", "error"); return; }
+            // Menerima .csv dan juga .txt untuk fleksibilitas
+            if (!file.name.match(/\.(csv|txt)$/i)) { showToast("Format file harus .csv (Comma Separated Values)", "error"); return; }
 
             openMonitor(true);
             document.getElementById('monitor-result').classList.add('hidden');
@@ -841,45 +937,103 @@
             reader.onload = async function(e) {
                 try {
                     const text = e.target.result;
+                    // Gunakan parser CSV robust baru yang menangani tanda kutip (")"
                     const rows = parseCSV(text);
                     const totalRows = rows.length;
-                    if (rows.length === 0) throw new Error("File CSV kosong.");
+                    
+                    if (rows.length === 0) throw new Error("File CSV kosong atau format salah.");
+
                     document.getElementById('mon-total').textContent = totalRows;
                     btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Mengimpor " + totalRows + " data...";
                     btn.disabled = true;
 
                     const payload = { action: "importCSV", data: rows };
 
-                    const res = fetch(SCRIPT_URL, {
+                    // Fetch ke Backend (Google Apps Script)
+                    fetch(SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
                         body: JSON.stringify(payload)
                     });
 
-                    showToast("Data sedang dikirim ke Backend...", "info");
+                    showToast("Data dikirim ke Server! Sedang menunggu konfirmasi...", "info");
 
-                    setTimeout(() => {
-                        appState.realisasiData = [...appState.realisasiData, ...rows]; 
-                        appState.filteredRealisasi = [...appState.realisasiData];
-                        
-                        renderRealisasiTable(); 
-                        updateDashboardStats(); 
-                        updatePrintSummary();
+                    // TUNGGU 3 DETIK UNTUK GAS MENULIS DATA KE SHEET (PROSES BUTUH WAKTU)
+                    setTimeout(async () => {
+                        // Refresh Data Dari Google Sheet (PENTING: ini kunci agar data masuk ke tampilan)
+                        await window.fetchRealisasiData();
+
+                        // Hitung perbedaan data untuk verifikasi
+                        const newTotal = appState.realisasiData.length;
                         
                         document.getElementById('monitor-spinner').style.display = 'none';
                         document.getElementById('monitor-result').classList.remove('hidden');
-                        btn.innerHTML = originalText; btn.disabled = false;
-                        input.value = "";
-                    }, 2000);
+                        
+                        // Tampilkan jumlah sukses berdasarkan baris yang terbaca kembali
+                        document.getElementById('mon-success').textContent = totalRows; 
+                        
+                        btn.innerHTML = originalText; 
+                        btn.disabled = false;
+                        input.value = ""; // Reset input agar bisa pilih file sama lagi jika perlu
+                        showToast("Selesai! Data berhasil disimpan di Sheet dan dimuat ulang.", "success");
+                    }, 3000); // Delay 3 detik sangat aman untuk proses append sheet GAS
 
                 } catch (err) {
-                    showToast("Gagal Parse CSV: " + err.message, "error");
+                    console.error(err);
+                    showToast("Gagal Baca File CSV: " + err.message, "error");
                     closeMonitor(); 
                     if(input) input.value = "";
-                    btn.innerHTML = originalText; btn.disabled = false;
+                    btn.innerHTML = originalText; 
+                    btn.disabled = false;
                 }
             };
+            
+            reader.onerror = function() {
+                showToast("Error saat membaca file.", "error");
+                closeMonitor();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            };
+            
             reader.readAsText(file);
+        };
+
+        // --- FUNGSI PARSER CSV ROBUST (MENANGANI KOMA DI DALAM TANDA KUTIP) ---
+        window.parseCSV = function(text) {
+            // Validasi input
+            if (!text) return [];
+
+            // Split baris dulu, tapi hati-hati dengan baris di dalam quotes jarang terjadi di simple CSV
+            // Kita gunakan regex untuk split baris yang robust
+            const lines = text.split(/\r\n|\n/);
+            const result = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                // Lewati baris kosong
+                if (!lines[i].trim()) continue;
+
+                // Regex Sakti untuk CSV: 
+                // Membagi berdasarkan koma HANYA jika koma tersebut tidak berada di dalam tanda kutip ganda ("")
+                const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+
+                // Bersihkan data dari spasi berlebih dan kutip pembuka/penutup
+                const cleanRow = row.map(val => {
+                    let str = val.trim();
+                    // Hapus kutip di awal dan akhir jika ada
+                    if (str.startsWith('"') && str.endsWith('"')) {
+                        str = str.slice(1, -1);
+                        // Ganti kutip ganda ("") dengan kutip tunggal (") sesuai standar CSV escaping
+                        str = str.replace(/""/g, '"');
+                    }
+                    return str;
+                });
+
+                // Pastikan baris punya data (minimal ada 1 kolom)
+                if (cleanRow.length > 0 && cleanRow[0] !== "") {
+                    result.push(cleanRow);
+                }
+            }
+            return result;
         };
 
         window.downloadExcel = function() {
@@ -1027,7 +1181,7 @@
 
             const ptCount = new Set(res.map(d=>d.namaPT)).size;
             const pangCount = new Set(res.map(d=>d.namaPangkalan)).size; 
-            const tabCount = res.reduce((a,b)=>a+b.jumlahTabung, 0);
+            const tabCount = res.reduce((a,b)=>a+b.jumlahTabung,0);
 
             const elTotalPT = document.getElementById('search-total-pt');
             const elTotalPang = document.getElementById('search-total-pangkalan');
@@ -1128,7 +1282,7 @@
             });
 
             const ptC = new Set(res.map(d=>d.namaPT)).size;
-            const tabC = res.reduce((a,b)=>a+b.jumlahTabung, 0);
+            const tabC = res.reduce((a,b)=>a+b.jumlahTabung,0);
 
             const elPt = document.getElementById('modern-real-total-pt');
             if (elPt) elPt.textContent = ptC;
@@ -1290,7 +1444,7 @@
                 
                 ptCount = new Set(dataToSum.map(d=>d.namaPT)).size;
                 const pangkalanCount = new Set(dataToSum.map(d=>d.namaPangkalan)).size; 
-                tabCount = dataToSum.reduce((a,b)=>a+b.jumlahTabung, 0);
+                tabCount = dataToSum.reduce((a,b)=>a+b.jumlahTabung,0);
 
                 if (titleEl) { titleEl.textContent = "LAPORAN DATA REALISASI"; titleEl.style.textAlign = 'center'; }
                 if(document.getElementById('print-prov-search')) document.getElementById('print-prov-search').textContent = "BANTEN";
@@ -1322,7 +1476,7 @@
                 tahunText = (thn && thn !== "semua") ? thn.toUpperCase() : "SEMUA TAHUN";
                 
                 ptCount = new Set(appState.filteredRealisasi.map(d=>d.namaPT)).size;
-                tabCount = appState.filteredRealisasi.reduce((a,b)=>a+b.jumlahTabung, 0);
+                tabCount = appState.filteredRealisasi.reduce((a,b)=>a+b.jumlahTabung,0);
 
                 if (titleEl) { titleEl.textContent = "LAPORAN REALISASI AGEN DPC BANTEN HISWANA MIGAS"; titleEl.style.textAlign = 'center'; }
 
@@ -1354,7 +1508,7 @@
                 else if (thn && thn !== "semua") tahunText = thn.toUpperCase(); 
                 
                 ptCount = new Set(appState.filteredRealisasi.map(d=>d.namaPT)).size;
-                tabCount = appState.filteredRealisasi.reduce((a,b)=>a+b.jumlahTabung, 0);
+                tabCount = appState.filteredRealisasi.reduce((a,b)=>a+b.jumlahTabung,0);
 
                 if (titleEl) { titleEl.textContent = "LAPORAN DATA REALISASI"; titleEl.style.textAlign = 'center'; }
 
@@ -1546,8 +1700,8 @@
 
         window.openMonitor = function(isLoading) {
             document.getElementById('monitor-modal').classList.remove('hidden');
-            if(isLoading) { document.getElementById('monitor-spinner').style.display = 'block'; document.getElementById('monitor-result').classList.add('hidden'); }
-            else { document.getElementById('monitor-spinner').style.display = 'none'; document.getElementById('monitor-result').classList.remove('hidden'); }
+            if(isLoading) { document.getElementById('monitor-spinner').classList.remove('hidden'); document.getElementById('monitor-result').classList.add('hidden'); }
+            else { document.getElementById('monitor-spinner').classList.add('hidden'); document.getElementById('monitor-result').classList.remove('hidden'); }
         };
         
         window.closeModal = closeModal;
@@ -1557,16 +1711,6 @@
         window.openMonitor = openMonitor;
         window.closeMonitor = closeMonitor;
         
-        window.parseCSV = function(text) {
-            const lines = text.trim().split('\n');
-            const result = [];
-            for (let i =0; i < lines.length; i++) {
-                const row = lines[i].split(',');
-                if(row.length >1) result.push(row);
-            }
-            return result;
-        };
-
         window.saveUser = function(e) {
             e.preventDefault();
             showToast("User Berhasil Ditambahkan!", "success");
@@ -1632,7 +1776,8 @@
 
         // --- PENGHUBUNG FORM (Event Listeners) ---
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("App Loaded (Hardcoded Dropdowns + Admin Staf Checklist + Password hiswana153 + HIDDEN SETTINGS MENU FOR STAFF + SECURE LOGIN INPUTS)");
+            console.log("App Loaded (Final Monitoring Style + Secure Login + Deploy URL)");
+            console.log("URL Backend: " + SCRIPT_URL);
 
             const userForm = document.getElementById('user-form');
             if(userForm) userForm.onsubmit = window.saveUser;
@@ -1779,7 +1924,7 @@
                         </div>
                         <div class="flex gap-2">
                             <button type="button" id="btn-import-excel" class="btn btn-primary" onclick="document.getElementById('import-file').click()"><i class="fas fa-file-upload"></i> Import Excel</button>
-                            <input type="file" id="import-file" accept=".csv" style="display:none;" onchange="window.handleImport(this)">
+                            <input type="file" id="import-file" accept=".csv, .txt" style="display:none;" onchange="window.handleImport(this)">
                             <button type="button" id="btn-export-to-excel-main" class="btn btn-success" onclick="window.downloadExcel()"><i class="fas fa-file-excel"></i> Export To Excel</button>
                             <button type="button" id="btn-clean-ghost" class="btn btn-danger" onclick="window.cleanTargetPTs()"><i class="fas fa-broom"></i> Hapus Sampah</button>
                         </div>
@@ -2107,32 +2252,73 @@
         </div>
     </div>
 
+    <!-- MODAL MONITORING (UPDATE TAMPILAN BARU) -->
     <div id="monitor-modal" class="modal-overlay hidden">
-        <div class="modal">
-            <h3><i class="fas fa-file-import"></i> Status Monitoring Import CSV</h3>
-            <div id="monitor-spinner" class="text-center mt-4 mb-4" style="display:none;">
-                <i class="fas fa-spinner fa-spin fa-2x" style="color:var(--primary-color)"></i><br>
-                Sedang Memproses Data di Google Sheet...<br><small>Mohon tunggu sebentar.</small>
+        <div class="modal" style="max-width: 600px;">
+            
+            <!-- Header Modal -->
+            <div class="monitor-header">
+                <i class="fas fa-file-import monitor-icon-lg"></i>
+                <h3 style="margin:0; font-weight:700;">Status Monitoring Import CSV</h3>
+                <p style="color:#888; margin:0; font-size:0.9rem;">Sedang memproses data ke Google Sheet...</p>
             </div>
+
+            <!-- Spinner (Loading) -->
+            <div id="monitor-spinner" class="text-center py-5 hidden">
+                <i class="fas fa-circle-notch fa-spin fa-3x" style="color:var(--primary-color)"></i>
+                <div style="margin-top:1rem; font-weight:600; color:#555;">Mohon Tunggu Sebentar...</div>
+                <div style="font-size:0.8rem; color:#aaa;">Sistem sedang mengimpor data secara aman.</div>
+            </div>
+
+            <!-- Hasil (Result) -->
             <div id="monitor-result" class="hidden">
-                <div class="card mb-4" style="border-left: 5px solid var(--success);">
-                    <h4>Status: <span style="color:var(--success)">Proses Selesai</span></h4>
-                    <div class="filter-grid">
-                        <div><small>Total Baris Data</small><strong id="mon-total">0</strong></div>
-                        <div>
-                            <small>Berhasil Masuk (Valid)</small><strong id="mon-success" style="font-size:1.2rem; color:var(--success)">0</strong></div>
-                        </div>
-                        <div>
-                            <small>Duplikat/Ditolak</small><strong id="mon-failed" style="font-size:1.2rem; color:var(--danger)">0</strong></div>
+                
+                <!-- Kartu Ringkasan -->
+                <div class="monitor-metrics">
+                    <!-- Kartu 1: Total Data -->
+                    <div class="monitor-card">
+                        <i class="fas fa-database monitor-metric-icon text-secondary"></i>
+                        <span class="monitor-metric-label text-secondary">Total Baris Data</span>
+                        <div class="monitor-metric-value" id="mon-total">0</div>
+                    </div>
+
+                    <!-- Kartu 2: Berhasil (Hijau) -->
+                    <div class="monitor-card" style="border-left: 4px solid var(--success);">
+                        <i class="fas fa-check-circle monitor-metric-icon text-success"></i>
+                        <span class="monitor-metric-label text-success">Berhasil Masuk (Valid)</span>
+                        <div class="monitor-metric-value text-success" id="mon-success">0</div>
+                    </div>
+
+                    <!-- Kartu 3: Gagal (Merah) -->
+                    <div class="monitor-card" style="border-left: 4px solid var(--danger);">
+                        <i class="fas fa-exclamation-circle monitor-metric-icon text-danger"></i>
+                        <span class="monitor-metric-label text-danger">Duplikat / Ditolak</span>
+                        <div class="monitor-metric-value text-danger" id="mon-failed">0</div>
+                    </div>
+                </div>
+
+                <!-- Pesan Status -->
+                <div id="mon-message" class="card mt-4 bg-light p-3 text-center" style="border-radius:8px; border:1px dashed #ccc; font-weight:500; display:none;">
+                    <!-- Pesan dinamis akan muncul di sini -->
+                </div>
+
+                <!-- Log Error List -->
+                <div class="mt-4">
+                    <h5 style="margin-bottom:10px; font-size:1rem; color:#333;">
+                        <i class="fas fa-list-ul mr-2" style="font-size:0.8rem;"></i>Detail Log Sistem (Opsional)
+                    </h5>
+                    <div id="monitor-errors" class="monitor-error-list">
+                        <div style="text-align: center; color: #888; font-style: italic; padding:1rem 0;">
+                            System ready. No errors reported.<br>
+                            Selamat! Data berhasil disinkronisasi.
                         </div>
                     </div>
-                    <div id="mon-message" class="mt-2 p-2 bg-light" style="border-radius:4px; font-size:0.9rem;"></div>
                 </div>
-                <h4 class="mb-2">Daftar Error Detail (Jika Ada)</h4>
-                <div id="monitor-errors" class="card" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; background: #fff;">
-                    <div class="text-center p-4 text-muted" style="font-size:0.9rem;">Tidak ada error. Semua data berhasil diimport.</div>
-                </div>
-                <button type="button" onclick="window.closeMonitor()" class="btn btn-primary w-full mt-4">Tutup Monitoring</button>
+
+                <!-- Tombol Tutup -->
+                <button type="button" onclick="window.closeMonitor()" class="btn btn-primary w-full mt-4 py-3" style="font-size:1rem;">
+                    <i class="fas fa-check mr-2"></i> Tutup & Refresh Data
+                </button>
             </div>
         </div>
     </div>
