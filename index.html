@@ -184,6 +184,14 @@
             vertical-align: middle;
         }
 
+        /* PERBAIKAN: RATA KIRI UNTUK KOLOM NAMA PT DAN WILAYAH */
+        #summary-realisasi-table th:nth-child(2), 
+        #summary-realisasi-table td:nth-child(2), 
+        #summary-realisasi-table th:nth-child(3), 
+        #summary-realisasi-table td:nth-child(3) {
+            text-align: left !important;
+        }
+
         #summary-realisasi-tablead th {
             background-color: var(--primary-color) !important; 
             color: #ffffff !important; 
@@ -247,6 +255,11 @@
             /* TABEL REALISASI PRINT */
             #summary-realisasi-table { width: 100%; table-layout: fixed !important; min-width: unset !important; border: 1px solid #000 !important; border-collapse: collapse; font-size: 8pt !important; word-break: break-word; }
             #summary-realisasi-table th, #summary-realisasi-table td { border: 0.5px solid #000 !important; padding: 1px 2px !important; color: black !important; text-align: center !important; vertical-align: middle; white-space: normal !important; overflow: visible !important; visibility: visible !important; display: table-cell !important; }
+            /* Print Override for Left Align */
+            #summary-realisasi-table th:nth-child(2), #summary-realisasi-table td:nth-child(2), 
+            #summary-realisasi-table th:nth-child(3), #summary-realisasi-table td:nth-child(3) {
+                text-align: left !important;
+            }
             #summary-realisasi-table th { background-color: #0056b3 !important; color: #ffffff !important; font-weight: bold !important; text-transform: uppercase; text-align: center !important; -webkit-print-color-adjust: exact; }
             #summary-realisasi-table th:nth-child(1), #summary-realisasi-table td:nth-child(1) { width: 3% !important; text-align: center; }
             #summary-realisasi-table th:nth-child(2), #summary-realisasi-table td:nth-child(2) { width: 14% !important; text-align: left !important; }
@@ -393,7 +406,7 @@
         .font-weight-bold { font-weight: bold; }
     </style>
 
-    <!-- JAVASCRIPT (FULL LOGIC + SECURE LOGIN + SERVER SYNC + SMART CSV IMPORT + NEW URL) -->
+    <!-- JAVASCRIPT (FULL LOGIC + SECURE LOGIN + SERVER SYNC + SMART CSV IMPORT + NEW URL + PAGINATION SEARCH + SORTING REALISASI + REFRESH LOADING FIX) -->
     <script>
         // --- CONFIG (URL APPS SCRIPT DIUPDATE KE VERSI FIX) ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNYEYkH1wavINVh3jZ9gVhjxEWAbVPnxFcxGr5hI6SIoq4x1hAYyQHdsX9oAp82x3x/exec";
@@ -414,14 +427,16 @@
             { id: 5, name: "Staf Admin", username: "staf", password: "hiswana153", role: "admin/staf", ptName: null }
         ];
 
-        // --- APP STATE (SEPARATED) ---
+        // --- APP STATE (SEPARATED + SEARCH PAGINATION) ---
         let appState = {
             currentUser: null,
             realisasiData: [],
             filteredRealisasi: [],
             userData: [],
             currentPage:1,
-            rowsPerPage: 50
+            rowsPerPage: 50,
+            searchCurrentPage: 1, // Tambahan untuk pagination pencarian
+            searchRowsPerPage: 50 // Tambahan untuk pagination pencarian
         };
         
         // ========================================
@@ -976,7 +991,7 @@
                         btn.disabled = false;
                         input.value = ""; // Reset input agar bisa pilih file sama lagi jika perlu
                         showToast("Selesai! Data berhasil disimpan di Sheet dan dimuat ulang.", "success");
-                    }, 3000); // Delay 3 detik sangat aman untuk proses append sheet GAS
+                    }, 3000); // Delay3 detik sangat aman untuk proses append sheet GAS
 
                 } catch (err) {
                     console.error(err);
@@ -1088,7 +1103,12 @@
         window.refreshRealisasiData = function() { window.fetchRealisasiData(); }; 
         window.refreshUserData = function() { window.fetchUserData(); }; 
 
+        // ==========================================
+        // --- SEARCH MENU & PAGINATION LOGIC ---
+        // ==========================================
+
         window.renderAdvKab = function() {
+            appState.searchCurrentPage = 1; // Reset ke halaman 1 saat filter kabupaten berubah
             const prov = normalize(document.getElementById('adv-filter-prov').value);
             let data = appState.realisasiData;
             
@@ -1121,6 +1141,7 @@
         };
 
         window.renderAdvKec = function() {
+            appState.searchCurrentPage = 1; // Reset ke halaman 1 saat filter kecamatan berubah
             const kab = normalize(document.getElementById('adv-filter-kab').value);
             const kec = normalize(document.getElementById('adv-filter-kec').value);
             let data = appState.realisasiData;
@@ -1133,7 +1154,16 @@
             renderAdvSearch();
         }
 
-        window.renderAdvKel = function() { renderAdvSearch(); };
+        window.renderAdvKel = function() {
+            appState.searchCurrentPage = 1; // Reset ke halaman 1 saat filter kelurahan berubah
+            renderAdvSearch();
+        };
+
+        // --- FUNGSI GANTI HALAMAN PENCARIAN ---
+        window.changeSearchPage = function(d) { 
+            appState.searchCurrentPage += d; 
+            renderAdvSearch(); 
+        }
 
         window.renderAdvSearch = function() {
             const rawBln = document.getElementById('adv-filter-bulan').value;
@@ -1179,6 +1209,18 @@
 
             appState.filteredRealisasi = res; 
 
+            // --- LOGIKA PAGINATION UNTUK TABEL PENCARIAN ---
+            const start = (appState.searchCurrentPage - 1) * appState.searchRowsPerPage;
+            const end = start + appState.searchRowsPerPage;
+            const pageData = res.slice(start, end); // Ambil data per halaman saja untuk tabel
+
+            // Update UI Pagination Pencarian
+            const totalPages = Math.ceil(res.length / appState.searchRowsPerPage);
+            document.getElementById('search-page-info').textContent = "Hal " + appState.searchCurrentPage + " / " + (totalPages ||1);
+            document.getElementById('search-prev-btn').disabled = appState.searchCurrentPage === 1;
+            document.getElementById('search-next-btn').disabled = end >= res.length;
+
+            // Hitung Statistik (Harus dari full `res`, bukan `pageData`)
             const ptCount = new Set(res.map(d=>d.namaPT)).size;
             const pangCount = new Set(res.map(d=>d.namaPangkalan)).size; 
             const tabCount = res.reduce((a,b)=>a+b.jumlahTabung,0);
@@ -1194,14 +1236,17 @@
             if(res.length === 0) {
                 showToast("Data tidak ditemukan untuk filter ini.", "warning");
             } else {
-                showToast(`Menampilkan ${res.length} data.`, "success");
+                // Hanya tampilkan toast jika bukan dari ganti halaman (untuk mengurangi notifikasi spam)
+                // Opsi: Hapus toast di sini jika ingin lebih bersih
             }
 
             updatePrintSummary();
-            renderSearchTable('search-table-body', res);
+            // Kirim `pageData` yang sudah di-slice ke tabel
+            renderSearchTable('search-table-body', pageData);
         };
 
         window.resetAdvFilters = function() {
+            appState.searchCurrentPage = 1; // Reset halaman saat reset semua filter
             document.getElementById('adv-filter-kab').value = "Semua";
             document.getElementById('adv-filter-kec').value = "Semua";
             document.getElementById('adv-filter-kel').value = "Semua";
@@ -1214,6 +1259,7 @@
             
             renderAdvSearch();
         };
+        // ========================================== END SEARCH ==========================================
 
         window.renderRealisasiView = function() {
             const kab = normalize(document.getElementById('real-filter-kab').value);
@@ -1293,7 +1339,7 @@
             updatePrintSummary();
         };
 
-        // --- FIX: ANOMALY DETECTION & DISPLAY LOGIC (ADMIN/STAF SUPPORT + CHECKLIST VISUAL) ---
+        // --- FIX: ANOMALY DETECTION & DISPLAY LOGIC (ADMIN/STAF SUPPORT + CHECKLIST VISUAL + SORTING) ---
         window.renderSummaryRealisasiTable = function(dataSource, selectedYearStr) {
             const tbody = document.getElementById('summary-realisasi-body');
             if(!tbody) return;
@@ -1324,8 +1370,25 @@
                 }
             });
             
+            // PERBAIKAN: SORTING DATA (Wilayah/Kabupaten A-Z, kemudian Nama PT A-Z)
+            const sortedKeys = Object.keys(grouped);
+            sortedKeys.sort((a, b) => {
+                const wilayahA = grouped[a].wilayah.toUpperCase();
+                const wilayahB = grouped[b].wilayah.toUpperCase();
+                const ptNameA = a.toUpperCase();
+                const ptNameB = b.toUpperCase();
+
+                if (wilayahA < wilayahB) return -1;
+                if (wilayahA > wilayahB) return 1;
+
+                if (ptNameA < ptNameB) return -1;
+                if (ptNameA > ptNameB) return 1;
+                return 0;
+            });
+
             let no = 1;
-            for (const ptName in grouped) {
+            // PERBAIKAN: Loop menggunakan sortedKeys
+            for (const ptName of sortedKeys) {
                 const ptData = grouped[ptName];
                 const tr = document.createElement('tr');
                 let html = "<td>" + no++ + "</td><td><strong>" + ptName + "</strong></td><td>" + ptData.wilayah + "</td>";
@@ -1400,6 +1463,7 @@
             const tb = document.getElementById(tbodyId);
             if(!tb) return;
             tb.innerHTML = '';
+            // Data yang masuk sudah di-slice di renderAdvSearch
             data.forEach((r, i) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = "<td>" + (i+1) + "</td><td>" + r.namaPT + "</td><td>" + r.namaPangkalan + "</td><td>" + r.alamat + "</td><td>" + r.kelurahan + "</td><td>" + r.kecamatan + "</td><td>" + r.kabupaten + "</td><td>" + r.provinsi + "</td><td>" + r.jumlahTabung.toLocaleString('id-ID') + "</td><td>" + r.periode + "</td>"; 
@@ -1416,7 +1480,10 @@
             document.getElementById('view-'+tab).classList.remove('hidden'); 
             document.getElementById('view-'+tab).classList.add('active');
             if (tab === 'realisasi') { renderRealisasiView(); }
-            if (tab === 'pencarian') { renderAdvSearch(); }
+            if (tab === 'pencarian') { 
+                appState.searchCurrentPage = 1; // Reset halaman saat pindah tab ke pencarian
+                renderAdvSearch(); 
+            }
         };
 
         window.updatePrintSummary = function() {
@@ -1774,9 +1841,49 @@
             }
         };
 
+        // --- FIX: UI LOADING SAAT REFRESH (PERBAIKAN BARU) ---
+        window.refreshRealisasiData = async function() {
+            // Ambil elemen tombol yang relevan
+            const btnData = document.getElementById('btn-refresh-realisasi');
+            const btnRealisasi = document.getElementById('btn-refresh-real');
+
+            // Simpan HTML asli untuk dikembalikan nanti
+            const originalHtmlData = btnData ? btnData.innerHTML : '';
+            const originalHtmlRealisasi = btnRealisasi ? btnRealisasi.innerHTML : '';
+
+            // Ubah UI Menjadi Loading
+            if(btnData) {
+                btnData.disabled = true;
+                btnData.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...'; 
+            }
+            if(btnRealisasi) {
+                btnRealisasi.disabled = true;
+                btnRealisasi.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...'; 
+            }
+
+            try {
+                // Panggil fungsi asli
+                await window.fetchRealisasiData();
+            } catch (err) {
+                console.error(err);
+                // Optional: tampilkan error toast jika perlu, tapi fetchRealisasiData sudah menangani toastnya
+            } finally {
+                // Kembalikan UI ke keadaan semula (Revert)
+                if(btnData) {
+                    btnData.innerHTML = originalHtmlData;
+                    btnData.disabled = false;
+                }
+                if(btnRealisasi) {
+                    btnRealisasi.innerHTML = originalHtmlRealisasi;
+                    btnRealisasi.disabled = false;
+                }
+            }
+        };
+        // ========================================== END FIX REFRESH ==========================================
+
         // --- PENGHUBUNG FORM (Event Listeners) ---
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("App Loaded (Final Monitoring Style + Secure Login + Deploy URL)");
+            console.log("App Loaded (Final Monitoring Style + Secure Login + Deploy URL + Search Pagination + Sorting Realisasi + Refresh Loading)");
             console.log("URL Backend: " + SCRIPT_URL);
 
             const userForm = document.getElementById('user-form');
@@ -2032,6 +2139,14 @@
                             <thead><tr><th width="40">No</th><th>Nama PT</th><th>Nama Pangkalan</th><th>Alamat Pangkalan</th><th>Kelurahan</th><th>Kecamatan</th><th>Kabupaten</th><th>Provinsi</th><th>Jumlah Tabung</th><th>Periode</th></tr></thead>
                             <tbody id="search-table-body"></tbody>
                         </table>
+                    </div>
+                    <!-- TAMBAHAN PAGINATION UNTUK MENU PENCARIAN -->
+                    <div class="pagination flex justify-between items-center p-4 no-print">
+                        <span id="search-page-info" style="font-size:0.9rem; color:#666;">Menampilkan 0 data</span>
+                        <div class="flex gap-2">
+                            <button type="button" id="search-prev-btn" class="btn btn-sm btn-outline" onclick="window.changeSearchPage(-1)">&laquo; Prev</button>
+                            <button type="button" id="search-next-btn" class="btn btn-sm btn-outline" onclick="window.changeSearchPage(1)">Next &raquo;</button>
+                        </div>
                     </div>
                 </div>
             </div>
