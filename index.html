@@ -7,7 +7,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- CSS STYLES (DIPERBARUI DENGAN STYLE MONITORING BARU) -->
+    <!-- CSS STYLES -->
     <style>
         :root {
             --primary-color: #0056b3;
@@ -184,7 +184,6 @@
             vertical-align: middle;
         }
 
-        /* PERBAIKAN: RATA KIRI UNTUK KOLOM NAMA PT DAN WILAYAH */
         #summary-realisasi-table th:nth-child(2), 
         #summary-realisasi-table td:nth-child(2), 
         #summary-realisasi-table th:nth-child(3), 
@@ -211,24 +210,24 @@
 
         /* CSS UNTUK HIGHLIGHT ANOMALY DATA */
         .data-anomaly {
-            color: #dc3545 !important; /* Merah Text */
+            color: #dc3545 !important; 
             font-weight: bold !important;
-            background-color: #ffebee !important; /* Background Merah Muda */
+            background-color: #ffebee !important; 
             border: 1px solid #f5c6cb !important;
             position: relative;
         }
         
         /* CSS UNTUK DISPLAY (ADMIN/STAF) - GREEN & RED CHECKMARK */
         .display-val-green {
-            color: #006400 !important; /* Deep Green */
+            color: #006400 !important; 
             font-weight: bold !important;
-            background-color: #e8f5e9 !important; /* Light Green BG */
+            background-color: #e8f5e9 !important; 
         }
 
         .display-val-red {
-            color: #dc3545 !important; /* Deep Red */
+            color: #dc3545 !important; 
             font-weight: bold !important;
-            background-color: #ffebee !important; /* Light Red BG */
+            background-color: #ffebee !important; 
         }
 
         @media print {
@@ -250,12 +249,9 @@
             .print-logo { font-size: 60px; color: var(--primary-color); display: none !important; }
             #print-realisasi-meta { display: block !important; margin-top: 10px; padding-top: 10px; border-top:1px dotted #ccc; font-size: 9pt; line-height: 1.6; text-align: center; }
             .print-meta-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 2px; }
-            .print-meta-label { font-weight: bold; margin-right: 0; }
 
-            /* TABEL REALISASI PRINT */
             #summary-realisasi-table { width: 100%; table-layout: fixed !important; min-width: unset !important; border: 1px solid #000 !important; border-collapse: collapse; font-size: 8pt !important; word-break: break-word; }
             #summary-realisasi-table th, #summary-realisasi-table td { border: 0.5px solid #000 !important; padding: 1px 2px !important; color: black !important; text-align: center !important; vertical-align: middle; white-space: normal !important; overflow: visible !important; visibility: visible !important; display: table-cell !important; }
-            /* Print Override for Left Align */
             #summary-realisasi-table th:nth-child(2), #summary-realisasi-table td:nth-child(2), 
             #summary-realisasi-table th:nth-child(3), #summary-realisasi-table td:nth-child(3) {
                 text-align: left !important;
@@ -277,7 +273,6 @@
             #summary-realisasi-table th:nth-child(14), #summary-realisasi-table td:nth-child(14) { width: 6.083% !important; text-align: right !important; }
             #summary-realisasi-table th:nth-child(16), #summary-realisasi-table td:nth-child(16) { width: 6.083% !important; text-align: right !important; }
 
-            /* TABEL PENCARIAN (SEARCH) - PRINT STYLE */
             #search-result-table { width: 100%; table-layout: fixed !important; min-width: unset !important; border: 1px solid #000 !important; border-collapse: collapse; font-size: 9pt !important; word-break: break-word; }
             #search-result-table th, #search-result-table td { border: 0.5px solid #000 !important; padding: 1px 2px !important; color: black !important; text-align: center !important; vertical-align: middle; white-space: normal !important; overflow: visible !important; visibility: visible !important; display: table-cell !important; }
             #search-result-table th { background-color: #0056b3 !important; color: #ffffff !important; font-weight: bold !important; text-transform: uppercase; text-align: center !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -294,7 +289,6 @@
             #search-result-table th:nth-child(10), #search-result-table td:nth-child(10) { display: none !important; border: none !important; }
             #search-result-table th:last-child, #search-result-table td:last-child { display: none !important; border: none !important; }
 
-            /* TABEL DATA UTAMA PRINT */
             #main-table { width: 100%; table-layout: fixed !important; min-width: unset !important; border: 1px solid #000 !important; border-collapse: collapse; font-size: 9pt !important; word-break: break-word; }
             #main-table th, #main-table td { border: 0.5px solid #000 !important; padding: 1px 2px !important; color: black !important; text-align: center !important; vertical-align: middle; white-space: normal !important; overflow: visible !important; visibility: visible !important; display: table-cell !important; }
             #main-table th { background-color: #28a745 !important; color: #ffffff !important; font-weight: bold !important; text-transform: uppercase; text-align: center !important; -webkit-print-color-adjust: exact; }
@@ -313,90 +307,19 @@
             .action-buttons, th:last-child, td:last-child { display: none !important; }
         }
 
-        /* --- CSS MONITORING MODAL (UPDATE RAPIH) --- */
-        .monitor-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .monitor-icon-lg {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .monitor-metrics {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .monitor-card {
-            background: #f8f9fa;
-            padding: 1rem 0.5rem;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid #eee;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-
-        .monitor-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .monitor-metric-icon {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .monitor-metric-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 0.2rem;
-        }
-
-        .monitor-metric-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            line-height: 1;
-        }
-
-        /* Custom Scrollbar untuk Error Log */
-        .monitor-error-list {
-            max-height: 200px;
-            overflow-y: auto;
-            background: #2b2b2b; /* Background gelap ala coding */
-            color: #00ff00; /* Teks hijau matrix */
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.85rem;
-            padding: 1rem;
-            border-radius: 4px;
-            border: 1px solid #444;
-            text-align: left;
-        }
-
-        .monitor-error-list::-webkit-scrollbar {
-            width: 8px;
-        }
-        .monitor-error-list::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-        .monitor-error-list::-webkit-scrollbar-thumb {
-            background: #555;
-            border-radius: 4px;
-        }
-        .monitor-error-list::-webkit-scrollbar-thumb:hover {
-            background: #777;
-        }
-
-        /* Helper Utility Classes for Modal */
+        .monitor-header { text-align: center; margin-bottom: 1.5rem; }
+        .monitor-icon-lg { font-size: 3rem; color: var(--primary-color); margin-bottom: 0.5rem; }
+        .monitor-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+        .monitor-card { background: #f8f9fa; padding: 1rem 0.5rem; border-radius: 8px; text-align: center; border: 1px solid #eee; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .monitor-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .monitor-metric-icon { font-size: 1.8rem; margin-bottom: 0.5rem; display: block; }
+        .monitor-metric-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; display: block; margin-bottom: 0.2rem; }
+        .monitor-metric-value { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+        .monitor-error-list { max-height: 200px; overflow-y: auto; background: #2b2b2b; color: #00ff00; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; padding: 1rem; border-radius: 4px; border: 1px solid #444; text-align: left; }
+        .monitor-error-list::-webkit-scrollbar { width: 8px; }
+        .monitor-error-list::-webkit-scrollbar-track { background: #1a1a1a; }
+        .monitor-error-list::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+        .monitor-error-list::-webkit-scrollbar-thumb:hover { background: #777; }
         .text-success { color: var(--success); }
         .text-danger { color: var(--danger); }
         .text-secondary { color: #6c757d; }
@@ -406,9 +329,9 @@
         .font-weight-bold { font-weight: bold; }
     </style>
 
-    <!-- JAVASCRIPT (FULL LOGIC + SECURE LOGIN + SERVER SYNC + SMART CSV IMPORT + NEW URL + PAGINATION SEARCH + SORTING REALISASI + REFRESH LOADING FIX) -->
+    <!-- JAVASCRIPT (UPDATED WITH OPTIMIZED IMPORT LOGIC) -->
     <script>
-        // --- CONFIG (URL APPS SCRIPT DIUPDATE KE VERSI FIX) ---
+        // --- CONFIG (URL APPS SCRIPT) ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNYEYkH1wavINVh3jZ9gVhjxEWAbVPnxFcxGr5hI6SIoq4x1hAYyQHdsX9oAp82x3x/exec";
         
         // --- VARIABLES ---
@@ -418,7 +341,7 @@
         const monthMapEn = {'Januari': 'January', 'Februari': 'February', 'Maret': 'March', 'April': 'April', 'Mei': 'May', 'Juni': 'June', 'Juli': 'July', 'Agustus': 'August', 'September': 'September', 'Oktober': 'October', 'November': 'November', 'Desember': 'December'};
         const shortMonthMap = {'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'mei': 5, 'jun': 6, 'jul': 7, 'agt': 8, 'sep': 9, 'okt': 10, 'nov': 11, 'des': 12};
 
-        // --- DATA USER SIMULASI (PASSWORD BISA DIUBAH LOKAL) ---
+        // --- DATA USER SIMULASI ---
         let simulatedUsers = [
             { id: 1, name: "Administrator", username: "admin", password: "admin123", role: "admin", ptName: null },
             { id: 2, name: "Admin PT", username: "admin_pt", password: "123", role: "pt", ptName: "PT Pertamina" },
@@ -427,7 +350,7 @@
             { id: 5, name: "Staf Admin", username: "staf", password: "hiswana153", role: "admin/staf", ptName: null }
         ];
 
-        // --- APP STATE (SEPARATED + SEARCH PAGINATION) ---
+        // --- APP STATE ---
         let appState = {
             currentUser: null,
             realisasiData: [],
@@ -435,8 +358,8 @@
             userData: [],
             currentPage:1,
             rowsPerPage: 50,
-            searchCurrentPage: 1, // Tambahan untuk pagination pencarian
-            searchRowsPerPage: 50 // Tambahan untuk pagination pencarian
+            searchCurrentPage: 1, 
+            searchRowsPerPage: 50 
         };
         
         // ========================================
@@ -458,11 +381,9 @@
             const user = userEl.value.trim().toLowerCase();
             const pass = passEl.value.trim();
 
-            // UI Loading State
             if(btnLogin) { btnLogin.disabled = true; btnLogin.innerHTML = "Memproses..."; }
 
             try {
-                // 1. Fetch User Data from Sheet (Async)
                 await window.fetchUserData();
 
                 if (user === 'admin' && pass === 'admin123' && role === 'admin') {
@@ -472,7 +393,6 @@
                     return;
                 }
                 
-                // --- FIX: LOGIN ADMIN/STAF (PASSWORD BARU: hiswana153) ---
                 if (user === 'staf' && pass === 'hiswana153' && role === 'admin/staf') {
                     setupAppSession({
                         id:5, name: "Staf Admin", username: "staf", password: "hiswana153", role: "admin/staf", ptName: null
@@ -500,45 +420,30 @@
             }
         };
 
-        // --- LOGIC PENERAPAN UI BERDASARKAN ROLE (ADMIN/STAF) ---
         function applyRoleRestrictions() {
             const role = appState.currentUser ? appState.currentUser.role : null;
-            
             if (!role) return;
 
-            // --- TARGET ELEMENTS ---
-            // Menu Data
             const btnRefreshUser = document.getElementById('btn-refresh-user');
             const btnExportExcel = document.getElementById('btn-export-to-excel-main');
             const btnPdfMain = document.getElementById('btn-pdf-main');
             const btnCetakMain = document.getElementById('btn-cetak-main');
             const tableContainer = document.getElementById('view-data').querySelector('.table-container');
-            
-            // Menu Navigation Links
             const navPencarian = document.getElementById('nav-pencarian');
             const navPengaturan = document.getElementById('nav-pengaturan');
 
             if (role === 'admin/staf') {
-                // 1. Menu Data: Hide specific buttons & table
                 if(btnRefreshUser) btnRefreshUser.style.display = 'none';
                 if(btnExportExcel) btnExportExcel.style.display = 'none';
                 if(btnPdfMain) btnPdfMain.style.display = 'none';
                 if(btnCetakMain) btnCetakMain.style.display = 'none';
                 if(tableContainer) tableContainer.style.display = 'none';
-
-                // 2. Menu Pencarian: Hide Completely
                 if(navPencarian) navPencarian.style.display = 'none';
-
-                // 3. Menu Realisasi: Visible (with custom styling logic inside render function)
-
-                // 4. --- PERINTAH BARU: SEMBUNYIKAN MENU PENGATURAN ---
                 if(navPengaturan) navPengaturan.style.display = 'none';
 
             } else {
-                // Logic Restore Visibility (Untuk Admin)
                 if(navPencarian) navPencarian.style.display = ''; 
                 if(navPengaturan) navPengaturan.style.display = '';
-                
                 if(btnRefreshUser) btnRefreshUser.style.display = 'inline-flex';
                 if(btnExportExcel) btnExportExcel.style.display = 'inline-flex';
                 if(btnPdfMain) btnPdfMain.style.display = 'inline-flex';
@@ -549,11 +454,9 @@
 
         function setupAppSession(userObj) {
             appState.currentUser = userObj;
-            
             document.getElementById('login-page').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             
-            // Update UI Profile
             document.getElementById('user-display-name').textContent = userObj.name;
             document.getElementById('user-display-role').textContent = userObj.role.toUpperCase();
             document.getElementById('user-avatar').textContent = userObj.name.charAt(0).toUpperCase();
@@ -561,7 +464,6 @@
             document.getElementById('set-username').textContent = "Username: " + userObj.username;
             document.getElementById('set-avatar').textContent = userObj.name.charAt(0).toUpperCase();
             
-            // --- FIX HIDE PENGATURAN MENU ---
             if (userObj.role !== 'admin') {
                 document.getElementById('nav-pengaturan').style.display = 'none';
             }
@@ -569,22 +471,14 @@
             document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-data').classList.add('active');
 
-            // APPLY RESTRICTIONS
             applyRoleRestrictions();
-
-            // Load Realisasi Data
             window.fetchRealisasiData();
         }
 
-        // --- FETCH REALISASI ---
         window.fetchRealisasiData = async function() {
             try {
                 const url = `${SCRIPT_URL}?action=getData&sheet=Sheet1`;
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'text/plain' }
-                });
-                
+                const response = await fetch(url, { method: 'GET', headers: { 'Content-Type': 'text/plain' } });
                 if (!response.ok) throw new Error("Gagal mengakses GAS Script. Status: " + response.status);
                 const json = await response.json();
                 if (json.status !== 'success' || !json.data) throw new Error("Gagal mengambil data Realisasi.");
@@ -613,14 +507,12 @@
             updateDashboardStats(); 
             populatePTDataList();
 
-            // --- FIX AUTO FILTER PT ---
             if (appState.currentUser && appState.currentUser.role !== 'admin' && appState.currentUser.role !== 'admin/staf') {
                 console.log("Auto-filtering data for PT:", appState.currentUser.ptName);
                 window.applyDataFilters(true);
             }
         };
 
-        // --- FETCH USER ---
         window.fetchUserData = async function() {
             try {
                 const url = `${SCRIPT_URL}?action=getUsers&sheet=Data_User`;
@@ -641,8 +533,6 @@
                 }
                 const hasAdmin = csvUserList.some(u => u.username.toLowerCase() === 'admin');
                 if (!hasAdmin) csvUserList.push({ id: 999, name: "Administrator", username: "admin", password: "admin123", role: "admin", ptName: null });
-                
-                // Cek apakah ada user staf di sheet, jika tidak pakai simulasi
                 const hasStaf = csvUserList.some(u => u.username.toLowerCase() === 'staf');
                 if(!hasStaf) csvUserList.push({ id: 5, name: "Staf Admin", username: "staf", password: "hiswana153", role: "admin/staf", ptName: null });
 
@@ -651,14 +541,12 @@
                 showToast("Daftar User berhasil dimuat via GAS!", "success");
             } catch (error) {
                 console.warn("Fetch User Error:", error);
-                // Ambil data dari variable global simulatedUsers
                 appState.userData = [...simulatedUsers];
                 renderUserTable();
                 showToast("Gagal muat User Sheet. Menggunakan Data Simulasi.", "error");
             }
         };
 
-        // --- FUNGSI PEMBANTU (MAPPER GAS ARRAY KE OBJ) ---
         function mapGasDataToObj(dataArray) {
             return dataArray.slice(1).map((r, i) => {
                 let processedPeriode = '-';
@@ -704,7 +592,7 @@
         }
 
         // -------------------------------------------------------
-
+        
         function toggleLoginHint() { document.getElementById('login-hint').classList.toggle('hidden'); }
         function normalize(str) { return (str || "").trim().toLowerCase(); }
         function showToast(msg, type) {
@@ -933,7 +821,81 @@
         };
 
         // ==========================================
-        // --- FUNGSI IMPORT CSV (ROBUST FRONTEND PARSER) ---
+        // --- FUNGSI PARSER CSV PINTAR (SMART VERSION) ---
+        // ==========================================
+        window.parseCSV = function(text) {
+            if (!text) return [];
+
+            // 1. AUTO-DETECT PEMISAH KOLOM (DELIMITER)
+            const sampleLines = text.split(/\r\n|\n/).slice(0, 10);
+            let commaCount = 0;
+            let semiCount = 0;
+
+            sampleLines.forEach(line => {
+                if (line.trim()) {
+                    commaCount += (line.match(/,/g) || []).length;
+                    semiCount += (line.match(/;/g) || []).length;
+                }
+            });
+
+            let delimiter = ',';
+            if (semiCount > commaCount) {
+                delimiter = ';';
+                console.log("System mendeteksi file Excel menggunakan pemisah Titik Koma (;)");
+            } else {
+                console.log("System mendeteksi file Excel menggunakan pemisah Koma (,)");
+            }
+
+            // 2. PROSES PEMISAHAN BARIS DAN DATA
+            let rawLines = text.split(/\r\n|\n/);
+            let lines = [];
+
+            // Gabungkan baris yang terpotong di dalam tanda kutip (Quoted Newline)
+            let currentRow = "";
+            
+            for (let line of rawLines) {
+                currentRow += line;
+                
+                let quotes = (currentRow.match(/"/g) || []).length;
+                
+                if (quotes % 2 === 1) {
+                    currentRow += "\n"; 
+                } else {
+                    lines.push(currentRow);
+                    currentRow = "";
+                }
+            }
+            if (currentRow.trim()) lines.push(currentRow);
+
+            const result = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+
+                // Regex untuk memisah berdasarkan DELIMITER yang sudah dideteksi
+                const splitRegex = new RegExp(delimiter + '(?=(?:(?:[^"]*"){2})*[^"]*$)');
+                
+                const row = lines[i].split(splitRegex);
+
+                // Bersihkan data
+                const cleanRow = row.map(val => {
+                    let str = val.trim();
+                    if (str.startsWith('"') && str.endsWith('"')) {
+                        str = str.slice(1, -1);
+                        str = str.replace(/""/g, '"');
+                    }
+                    return str;
+                });
+
+                if (cleanRow.length > 0 && cleanRow[0] !== "") {
+                    result.push(cleanRow);
+                }
+            }
+            return result;
+        };
+        
+        // ==========================================
+        // --- FUNGSI IMPORT (OPTIMIZED FOR SAFETY & SPEED) ---
         // ==========================================
         window.handleImport = function(input) {
             const file = input.files[0];
@@ -941,7 +903,6 @@
             const originalText = btn.innerHTML;
 
             if (!file) { showToast("Silakan pilih file Excel/CSV dulu.", "error"); return; }
-            // Menerima .csv dan juga .txt untuk fleksibilitas
             if (!file.name.match(/\.(csv|txt)$/i)) { showToast("Format file harus .csv (Comma Separated Values)", "error"); return; }
 
             openMonitor(true);
@@ -952,50 +913,102 @@
             reader.onload = async function(e) {
                 try {
                     const text = e.target.result;
-                    // Gunakan parser CSV robust baru yang menangani tanda kutip (")"
-                    const rows = parseCSV(text);
-                    const totalRows = rows.length;
                     
-                    if (rows.length === 0) throw new Error("File CSV kosong atau format salah.");
+                    // 1. PARSING DATA (GUNAKAN FUNGSI PINTAR)
+                    const allRows = parseCSV(text); 
 
-                    document.getElementById('mon-total').textContent = totalRows;
-                    btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Mengimpor " + totalRows + " data...";
-                    btn.disabled = true;
-
-                    const payload = { action: "importCSV", data: rows };
-
-                    // Fetch ke Backend (Google Apps Script)
-                    fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        body: JSON.stringify(payload)
+                    // 2. NORMALISASI PANJANG KOLOM (PADDING)
+                    const expectedColumns = 11; 
+                    const normalizedRows = allRows.map(row => {
+                        if (!Array.isArray(row)) return [row];
+                        while (row.length < expectedColumns) { row.push(""); }
+                        return row;
                     });
 
-                    showToast("Data dikirim ke Server! Sedang menunggu konfirmasi...", "info");
+                    const totalRows = normalizedRows.length;
+                    if (totalRows === 0) throw new Error("File CSV kosong atau format salah.");
 
-                    // TUNGGU 3 DETIK UNTUK GAS MENULIS DATA KE SHEET (PROSES BUTUH WAKTU)
+                    document.getElementById('mon-total').textContent = totalRows;
+                    
+                    // 3. PENGATURAN BATCH (OPTIMIZED)
+                    const batchSize = 100; // Ditingkatkan dari 50 menjadi 100 (lebih cepat, aman)
+                    let successCount = 0;
+                    let failedCount = 0;
+
+                    btn.disabled = true;
+
+                    // 4. LOOP KIRIM PAKET DENGAN RETRY LOGIC
+                    for (let i = 0; i < totalRows; i += batchSize) {
+                        const chunk = normalizedRows.slice(i, i + batchSize);
+                        const currentRowIndex = i + batchSize;
+                        
+                        // Update tampilan monitor loading
+                        document.getElementById('monitor-spinner').innerHTML = `
+                            <i class="fas fa-circle-notch fa-spin fa-3x" style="color:var(--primary-color)"></i>
+                            <div style="margin-top:1rem; font-weight:600; color:#555;">Sedang Mengirim Paket...</div>
+                            <div style="font-size:1.2rem; font-weight:bold; color:var(--primary-color)">${Math.min(currentRowIndex, totalRows)} / ${totalRows} Baris</div>
+                            <div style="font-size:0.8rem; color:#aaa;">Mohon jangan tutup halaman ini.</div>
+                        `;
+
+                        const payload = { action: "importCSV", data: chunk };
+                        let isSent = false;
+                        let retryAttempt = 0;
+                        const maxRetries = 2; // Coba ulang 2 kali jika gagal
+
+                        // LOGIKA RETRY (Keselamatan Jaringan)
+                        while (!isSent && retryAttempt <= maxRetries) {
+                            try {
+                                await fetch(SCRIPT_URL, {
+                                    method: 'POST',
+                                    mode: 'no-cors',
+                                    body: JSON.stringify(payload)
+                                });
+                                isSent = true; // Berhasil
+                                successCount += chunk.length;
+                            } catch (err) {
+                                console.error(`Gagal paket ${i}-${currentRowIndex}, percobaan ${retryAttempt + 1}:`, err);
+                                retryAttempt++;
+                                if (retryAttempt <= maxRetries) {
+                                    // Tunggu 2 detik sebelum mencoba lagi
+                                    await new Promise(r => setTimeout(r, 2000));
+                                }
+                            }
+                        }
+
+                        if (!isSent) {
+                            failedCount += chunk.length;
+                            console.error("Gagal mengirim paket setelah 3x percobaan.");
+                        }
+
+                        // Delay standar untuk menghindari Rate Limit Server
+                        await new Promise(r => setTimeout(r, 300)); // Diturunkan dari 1000ms ke 300ms
+                    }
+
+                    // 5. SELESAI PENGIRIMAN
+                    document.getElementById('monitor-spinner').style.display = 'none';
+                    document.getElementById('monitor-result').classList.remove('hidden');
+                    
+                    // Tampilkan hasil akhir
+                    document.getElementById('mon-success').textContent = successCount; 
+                    document.getElementById('mon-failed').textContent = failedCount;
+
+                    if (failedCount > 0) {
+                        showToast("Selesai! " + successCount + " berhasil, " + failedCount + " gagal (Cek koneksi).", "warning");
+                    } else {
+                        showToast("Selesai! Semua data berhasil diimpor (" + successCount + " baris).", "success");
+                    }
+
+                    // Refresh Data Otomatis
                     setTimeout(async () => {
-                        // Refresh Data Dari Google Sheet (PENTING: ini kunci agar data masuk ke tampilan)
                         await window.fetchRealisasiData();
-
-                        // Hitung perbedaan data untuk verifikasi
-                        const newTotal = appState.realisasiData.length;
-                        
-                        document.getElementById('monitor-spinner').style.display = 'none';
-                        document.getElementById('monitor-result').classList.remove('hidden');
-                        
-                        // Tampilkan jumlah sukses berdasarkan baris yang terbaca kembali
-                        document.getElementById('mon-success').textContent = totalRows; 
-                        
                         btn.innerHTML = originalText; 
                         btn.disabled = false;
-                        input.value = ""; // Reset input agar bisa pilih file sama lagi jika perlu
-                        showToast("Selesai! Data berhasil disimpan di Sheet dan dimuat ulang.", "success");
-                    }, 3000); // Delay3 detik sangat aman untuk proses append sheet GAS
+                        input.value = ""; 
+                    }, 2000);
 
                 } catch (err) {
                     console.error(err);
-                    showToast("Gagal Baca File CSV: " + err.message, "error");
+                    showToast("Gagal Proses Import: " + err.message, "error");
                     closeMonitor(); 
                     if(input) input.value = "";
                     btn.innerHTML = originalText; 
@@ -1011,44 +1024,6 @@
             };
             
             reader.readAsText(file);
-        };
-
-        // --- FUNGSI PARSER CSV ROBUST (MENANGANI KOMA DI DALAM TANDA KUTIP) ---
-        window.parseCSV = function(text) {
-            // Validasi input
-            if (!text) return [];
-
-            // Split baris dulu, tapi hati-hati dengan baris di dalam quotes jarang terjadi di simple CSV
-            // Kita gunakan regex untuk split baris yang robust
-            const lines = text.split(/\r\n|\n/);
-            const result = [];
-
-            for (let i = 0; i < lines.length; i++) {
-                // Lewati baris kosong
-                if (!lines[i].trim()) continue;
-
-                // Regex Sakti untuk CSV: 
-                // Membagi berdasarkan koma HANYA jika koma tersebut tidak berada di dalam tanda kutip ganda ("")
-                const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-
-                // Bersihkan data dari spasi berlebih dan kutip pembuka/penutup
-                const cleanRow = row.map(val => {
-                    let str = val.trim();
-                    // Hapus kutip di awal dan akhir jika ada
-                    if (str.startsWith('"') && str.endsWith('"')) {
-                        str = str.slice(1, -1);
-                        // Ganti kutip ganda ("") dengan kutip tunggal (") sesuai standar CSV escaping
-                        str = str.replace(/""/g, '"');
-                    }
-                    return str;
-                });
-
-                // Pastikan baris punya data (minimal ada 1 kolom)
-                if (cleanRow.length > 0 && cleanRow[0] !== "") {
-                    result.push(cleanRow);
-                }
-            }
-            return result;
         };
 
         window.downloadExcel = function() {
@@ -1108,7 +1083,7 @@
         // ==========================================
 
         window.renderAdvKab = function() {
-            appState.searchCurrentPage = 1; // Reset ke halaman 1 saat filter kabupaten berubah
+            appState.searchCurrentPage = 1; 
             const prov = normalize(document.getElementById('adv-filter-prov').value);
             let data = appState.realisasiData;
             
@@ -1141,7 +1116,7 @@
         };
 
         window.renderAdvKec = function() {
-            appState.searchCurrentPage = 1; // Reset ke halaman 1 saat filter kecamatan berubah
+            appState.searchCurrentPage = 1; 
             const kab = normalize(document.getElementById('adv-filter-kab').value);
             const kec = normalize(document.getElementById('adv-filter-kec').value);
             let data = appState.realisasiData;
@@ -1155,11 +1130,10 @@
         }
 
         window.renderAdvKel = function() {
-            appState.searchCurrentPage = 1; // Reset ke halaman 1 saat filter kelurahan berubah
+            appState.searchCurrentPage = 1; 
             renderAdvSearch();
         };
 
-        // --- FUNGSI GANTI HALAMAN PENCARIAN ---
         window.changeSearchPage = function(d) { 
             appState.searchCurrentPage += d; 
             renderAdvSearch(); 
@@ -1209,18 +1183,15 @@
 
             appState.filteredRealisasi = res; 
 
-            // --- LOGIKA PAGINATION UNTUK TABEL PENCARIAN ---
             const start = (appState.searchCurrentPage - 1) * appState.searchRowsPerPage;
             const end = start + appState.searchRowsPerPage;
-            const pageData = res.slice(start, end); // Ambil data per halaman saja untuk tabel
+            const pageData = res.slice(start, end); 
 
-            // Update UI Pagination Pencarian
             const totalPages = Math.ceil(res.length / appState.searchRowsPerPage);
             document.getElementById('search-page-info').textContent = "Hal " + appState.searchCurrentPage + " / " + (totalPages ||1);
             document.getElementById('search-prev-btn').disabled = appState.searchCurrentPage === 1;
             document.getElementById('search-next-btn').disabled = end >= res.length;
 
-            // Hitung Statistik (Harus dari full `res`, bukan `pageData`)
             const ptCount = new Set(res.map(d=>d.namaPT)).size;
             const pangCount = new Set(res.map(d=>d.namaPangkalan)).size; 
             const tabCount = res.reduce((a,b)=>a+b.jumlahTabung,0);
@@ -1236,17 +1207,15 @@
             if(res.length === 0) {
                 showToast("Data tidak ditemukan untuk filter ini.", "warning");
             } else {
-                // Hanya tampilkan toast jika bukan dari ganti halaman (untuk mengurangi notifikasi spam)
-                // Opsi: Hapus toast di sini jika ingin lebih bersih
+                // Hanya tampilkan toast jika bukan dari ganti halaman
             }
 
             updatePrintSummary();
-            // Kirim `pageData` yang sudah di-slice ke tabel
             renderSearchTable('search-table-body', pageData);
         };
 
         window.resetAdvFilters = function() {
-            appState.searchCurrentPage = 1; // Reset halaman saat reset semua filter
+            appState.searchCurrentPage = 1; 
             document.getElementById('adv-filter-kab').value = "Semua";
             document.getElementById('adv-filter-kec').value = "Semua";
             document.getElementById('adv-filter-kel').value = "Semua";
@@ -1339,7 +1308,6 @@
             updatePrintSummary();
         };
 
-        // --- FIX: ANOMALY DETECTION & DISPLAY LOGIC (ADMIN/STAF SUPPORT + CHECKLIST VISUAL + SORTING) ---
         window.renderSummaryRealisasiTable = function(dataSource, selectedYearStr) {
             const tbody = document.getElementById('summary-realisasi-body');
             if(!tbody) return;
@@ -1370,7 +1338,6 @@
                 }
             });
             
-            // PERBAIKAN: SORTING DATA (Wilayah/Kabupaten A-Z, kemudian Nama PT A-Z)
             const sortedKeys = Object.keys(grouped);
             sortedKeys.sort((a, b) => {
                 const wilayahA = grouped[a].wilayah.toUpperCase();
@@ -1387,7 +1354,6 @@
             });
 
             let no = 1;
-            // PERBAIKAN: Loop menggunakan sortedKeys
             for (const ptName of sortedKeys) {
                 const ptData = grouped[ptName];
                 const tr = document.createElement('tr');
@@ -1399,7 +1365,6 @@
                     let cellContent = "";
                     let cellStyle = "";
 
-                    // 1. Check Anomaly (Data Double)
                     if (currentVal > 0) {
                         if (mIndex > 0) {
                             let prevM = printMonths[mIndex - 1];
@@ -1417,7 +1382,6 @@
                         }
                     }
 
-                    // 2. Check Admin/Staf Requirement (Green Number / Red X)
                     if (isAdminStaf) {
                         if (currentVal > 0) {
                             cellContent = '<i class="fas fa-check" style="font-size: 1.2rem;"></i>'; 
@@ -1463,7 +1427,6 @@
             const tb = document.getElementById(tbodyId);
             if(!tb) return;
             tb.innerHTML = '';
-            // Data yang masuk sudah di-slice di renderAdvSearch
             data.forEach((r, i) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = "<td>" + (i+1) + "</td><td>" + r.namaPT + "</td><td>" + r.namaPangkalan + "</td><td>" + r.alamat + "</td><td>" + r.kelurahan + "</td><td>" + r.kecamatan + "</td><td>" + r.kabupaten + "</td><td>" + r.provinsi + "</td><td>" + r.jumlahTabung.toLocaleString('id-ID') + "</td><td>" + r.periode + "</td>"; 
@@ -1481,7 +1444,7 @@
             document.getElementById('view-'+tab).classList.add('active');
             if (tab === 'realisasi') { renderRealisasiView(); }
             if (tab === 'pencarian') { 
-                appState.searchCurrentPage = 1; // Reset halaman saat pindah tab ke pencarian
+                appState.searchCurrentPage = 1; 
                 renderAdvSearch(); 
             }
         };
@@ -1669,7 +1632,6 @@
             document.getElementById('set-tab-'+t).classList.remove('hidden');
         };
 
-        // --- FIX PASSWORD BUTTON HANDLER (FINAL & LOCAL UPDATE) ---
         window.handleUpdatePassword = async function(e) {
             e.preventDefault();
             
@@ -1708,7 +1670,6 @@
             showToast("Sedang memproses perubahan password...", "info");
 
             try {
-                // Kirim ke Backend
                 const payload = {
                     action: "updatePassword",
                     username: appState.currentUser.username,
@@ -1716,14 +1677,12 @@
                     newPassword: newPass
                 };
 
-                // Kirim Fetch
                 const res = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: JSON.stringify(payload)
                 });
 
-                // UPDATE DATA LOKAL (AGAR BISA LOGIN ULANG TANPA EDIT KODE)
                 const userIndex = simulatedUsers.findIndex(u => u.username === appState.currentUser.username);
                 if (userIndex !== -1) {
                     simulatedUsers[userIndex].password = newPass;
@@ -1841,17 +1800,13 @@
             }
         };
 
-        // --- FIX: UI LOADING SAAT REFRESH (PERBAIKAN BARU) ---
         window.refreshRealisasiData = async function() {
-            // Ambil elemen tombol yang relevan
             const btnData = document.getElementById('btn-refresh-realisasi');
             const btnRealisasi = document.getElementById('btn-refresh-real');
 
-            // Simpan HTML asli untuk dikembalikan nanti
             const originalHtmlData = btnData ? btnData.innerHTML : '';
             const originalHtmlRealisasi = btnRealisasi ? btnRealisasi.innerHTML : '';
 
-            // Ubah UI Menjadi Loading
             if(btnData) {
                 btnData.disabled = true;
                 btnData.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...'; 
@@ -1862,13 +1817,10 @@
             }
 
             try {
-                // Panggil fungsi asli
                 await window.fetchRealisasiData();
             } catch (err) {
                 console.error(err);
-                // Optional: tampilkan error toast jika perlu, tapi fetchRealisasiData sudah menangani toastnya
             } finally {
-                // Kembalikan UI ke keadaan semula (Revert)
                 if(btnData) {
                     btnData.innerHTML = originalHtmlData;
                     btnData.disabled = false;
@@ -1879,8 +1831,7 @@
                 }
             }
         };
-        // ========================================== END FIX REFRESH ==========================================
-
+        
         // --- PENGHUBUNG FORM (Event Listeners) ---
         document.addEventListener('DOMContentLoaded', function() {
             console.log("App Loaded (Final Monitoring Style + Secure Login + Deploy URL + Search Pagination + Sorting Realisasi + Refresh Loading)");
@@ -1925,10 +1876,8 @@
                 <option value="pt">PT / Agen</option>
             </select>
             <label>Username</label>
-            <!-- PERBAIKAN KEAMANAN: VALUE DIHAPUS, PLACEHOLDER DITAMBAH -->
             <input type="text" id="username" placeholder="Masukkan Username..." value="">
             <label>Password</label>
-            <!-- PERBAIKAN KEAMANAN: VALUE DIHAPUS, PLACEHOLDER DITAMBAH -->
             <input type="password" id="password" placeholder="Masukkan Password..." value="">
             
             <button type="button" class="btn btn-primary w-full mt-4" onclick="window.doLogin()">MASUK <i class="fas fa-arrow-right"></i></button>
@@ -2140,7 +2089,6 @@
                             <tbody id="search-table-body"></tbody>
                         </table>
                     </div>
-                    <!-- TAMBAHAN PAGINATION UNTUK MENU PENCARIAN -->
                     <div class="pagination flex justify-between items-center p-4 no-print">
                         <span id="search-page-info" style="font-size:0.9rem; color:#666;">Menampilkan 0 data</span>
                         <div class="flex gap-2">
@@ -2367,7 +2315,7 @@
         </div>
     </div>
 
-    <!-- MODAL MONITORING (UPDATE TAMPILAN BARU) -->
+    <!-- MODAL MONITORING (OPTIMIZED) -->
     <div id="monitor-modal" class="modal-overlay hidden">
         <div class="modal" style="max-width: 600px;">
             
