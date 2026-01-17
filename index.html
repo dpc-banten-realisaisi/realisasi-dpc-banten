@@ -329,7 +329,7 @@
         .font-weight-bold { font-weight: bold; }
     </style>
 
-    <!-- JAVASCRIPT (UPDATED WITH OPTIMIZED IMPORT LOGIC) -->
+    <!-- JAVASCRIPT (UPDATED WITH OPTIMIZED IMPORT LOGIC + PT REALISASI FIX + SETTINGS PT FIX) -->
     <script>
         // --- CONFIG (URL APPS SCRIPT) ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNYEYkH1wavINVh3jZ9gVhjxEWAbVPnxFcxGr5hI6SIoq4x1hAYyQHdsX9oAp82x3x/exec";
@@ -432,7 +432,10 @@
             const navPencarian = document.getElementById('nav-pencarian');
             const navPengaturan = document.getElementById('nav-pengaturan');
 
+            // --- FIX: LOGIKA PENYEMBUNYIANAN MENU ---
+            
             if (role === 'admin/staf') {
+                // Staf: Sembunyikan tombol edit/export/cetak, dan juga Menu Pengaturan
                 if(btnRefreshUser) btnRefreshUser.style.display = 'none';
                 if(btnExportExcel) btnExportExcel.style.display = 'none';
                 if(btnPdfMain) btnPdfMain.style.display = 'none';
@@ -441,7 +444,19 @@
                 if(navPencarian) navPencarian.style.display = 'none';
                 if(navPengaturan) navPengaturan.style.display = 'none';
 
+            } else if (role === 'pt') {
+                // PT: Sembunyikan Menu Pengaturan
+                if(navPengaturan) navPengaturan.style.display = 'none';
+                // PT tetap bisa melihat Pencarian
+                if(navPencarian) navPencarian.style.display = '';
+                // PT tetap bisa melihat Export/Cetak (default)
+                if(btnExportExcel) btnExportExcel.style.display = 'inline-flex';
+                if(btnPdfMain) btnPdfMain.style.display = 'inline-flex';
+                if(btnCetakMain) btnCetakMain.style.display = 'inline-flex';
+                if(tableContainer) tableContainer.style.display = 'block';
+
             } else {
+                // Admin: Tampilkan Semu
                 if(navPencarian) navPencarian.style.display = ''; 
                 if(navPengaturan) navPengaturan.style.display = '';
                 if(btnRefreshUser) btnRefreshUser.style.display = 'inline-flex';
@@ -464,7 +479,8 @@
             document.getElementById('set-username').textContent = "Username: " + userObj.username;
             document.getElementById('set-avatar').textContent = userObj.name.charAt(0).toUpperCase();
             
-            if (userObj.role !== 'admin') {
+            // --- FIX: HANYA SEMBUNYIKAN NAV PENGATURAN UNTUK ROLE PT ---
+            if (userObj.role === 'pt') {
                 document.getElementById('nav-pengaturan').style.display = 'none';
             }
 
@@ -676,7 +692,7 @@
             const data = appState.filteredRealisasi; 
             const ptCount = new Set(data.map(d=>d.namaPT)).size;
             const pangCount = new Set(data.map(d=>d.namaPangkalan)).size;
-            const tabCount = data.reduce((a,b)=>a+b.jumlahTabung, 0);
+            const tabCount = data.reduce((a,b)=>a+b.jumlahTabung,0);
             document.getElementById('stat-total-pt').textContent = ptCount;
             document.getElementById('stat-total-pangkalan').textContent = pangCount;
             document.getElementById('stat-total-tabung').textContent = tabCount.toLocaleString('id-ID');
@@ -1230,26 +1246,54 @@
         };
         // ========================================== END SEARCH ==========================================
 
+        // ==========================================
+        // --- FIX KHUSUS: REALISASI VIEW UNTUK PT/AGEN ---
+        // ==========================================
         window.renderRealisasiView = function() {
             const kab = normalize(document.getElementById('real-filter-kab').value);
-            let pt = null;
+            let ptFilter = null; // Variabel penampung nama PT yang dicari (sudah di-normalisasi)
 
-            if (appState.currentUser && appState.currentUser.role !== 'admin') {
-                pt = appState.currentUser.ptName;
-                document.getElementById('real-filter-pt').value = pt;
-                document.getElementById('real-filter-pt').disabled = true;
+            // --- LOGIKA KHUSUS UNTUK USER PT/AGEN ---
+            if (appState.currentUser && appState.currentUser.role === 'pt') {
+                // 1. Paksa ambil nama PT dari session user
+                const userPTName = appState.currentUser.ptName;
+                
+                // 2. Update UI Dropdown agar konsisten (tetapi disabled agar tidak bisa diubah)
+                const ptSelect = document.getElementById('real-filter-pt');
+                if(ptSelect) {
+                    ptSelect.value = userPTName; 
+                    ptSelect.disabled = true; 
+                }
+                
+                // 3. NORMALISASI NAMA PT UNTUK PEMBANDINGAN YANG AKURAT
+                // Ini kuncinya: kita pastikan teks dari user dibersihkan spasi/huruf besar-kecilnya
+                ptFilter = normalize(userPTName); 
             } else {
-                pt = normalize(document.getElementById('real-filter-pt').value);
-                document.getElementById('real-filter-pt').disabled = false;
+                // --- LOGIKA UNTUK ADMIN ---
+                ptFilter = normalize(document.getElementById('real-filter-pt').value);
+                const ptSelect = document.getElementById('real-filter-pt');
+                if(ptSelect) ptSelect.disabled = false;
             }
 
             const rawTahun = document.getElementById('real-filter-tahun').value;
 
             let data = [...appState.realisasiData]; 
             
-            if (kab && kab !== "semua") data = data.filter(d => normalize(d.kabupaten) === kab);
-            if (pt && pt !== "semua") data = data.filter(d => normalize(d.namaPT) === pt);
+            // 1. Filter Kabupaten
+            if (kab && kab !== "semua") {
+                data = data.filter(d => normalize(d.kabupaten) === kab);
+            }
+            
+            // 2. Filter PT (FIXED)
+            // Kita bandingkan ptFilter (sudah bersih) dengan d.namaPT yang juga dibersihkan
+            if (ptFilter && ptFilter !== "semua") {
+                data = data.filter(d => {
+                    const dataPT = normalize(d.namaPT);
+                    return dataPT === ptFilter;
+                });
+            }
 
+            // 3. Filter Tahun (untuk summary bar)
             let dataForSummary = [...data];
             if (rawTahun && rawTahun !== "semua") {
                 dataForSummary = dataForSummary.filter(d => d.periode && d.periode.includes(rawTahun));
@@ -1263,16 +1307,26 @@
             if(elYear) elYear.textContent = yearLabel;
             if(elTab) elTab.textContent = totalTabungFiltered.toLocaleString('id-ID');
 
+            // 4. Render Tabel Ringkasan
             renderSummaryRealisasiTable(data, rawTahun);
+            
+            // 5. Update Statistik Bawah
             applyRealisasi(data);
         };
 
+        // ==========================================
+        // --- FIX KHUSUS: APPLY REALISASI (PT/AGEN FIX) ---
+        // ==========================================
         window.applyRealisasi = function(data) {
+            // Data yang masuk ke sini sudah difilter oleh renderRealisasiView, 
+            // tapi kita pastikan lagi logicnya rapi.
+            
             const kab = normalize(document.getElementById('real-filter-kab').value);
             let pt = null;
 
-            if (appState.currentUser && appState.currentUser.role !== 'admin') {
-                pt = appState.currentUser.ptName;
+            // Gunakan logic yang sama: Jika PT user, paksa pakai session user
+            if (appState.currentUser && appState.currentUser.role === 'pt') {
+                pt = appState.currentUser.ptName; // Kita akan normalisasi di bawah
             } else {
                 pt = normalize(document.getElementById('real-filter-pt').value);
             }
@@ -1283,16 +1337,26 @@
 
             let res = data.filter(d => { 
                 let match = true;
-                if (kab && kab !== "semua") { if (normalize(d.kabupaten) !== kab) match = false; }
+                
+                // Cek Kabupaten
+                if (kab && kab !== "semua") { 
+                    if (normalize(d.kabupaten) !== kab) match = false; 
+                }
+                
+                // Cek PT (Normalization Fix)
                 if (pt && pt !== "semua") { 
                     const dataPT = normalize(d.namaPT);
-                    const userPT = normalize(pt);
+                    const userPT = normalize(pt); // Normalisasi userPT juga
                     if (dataPT === userPT) match = true;
                     else if (dataPT.includes(userPT) && userPT.length > 3) match = true;
                     else if (userPT.includes(dataPT) && dataPT.length > 3) match = true;
                     else match = false;
                 }
-                if ((thn && thn !== "semua" || blnSel && blnSel !== "semua") && d.periode) { if (!checkMonthMatch(d.periode, rawBln, thn)) match = false; }
+                
+                // Cek Bulan & Tahun
+                if ((thn && thn !== "semua" || blnSel && blnSel !== "semua") && d.periode) { 
+                    if (!checkMonthMatch(d.periode, rawBln, thn)) match = false; 
+                }
                 return match;
             });
 
@@ -1834,7 +1898,7 @@
         
         // --- PENGHUBUNG FORM (Event Listeners) ---
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("App Loaded (Final Monitoring Style + Secure Login + Deploy URL + Search Pagination + Sorting Realisasi + Refresh Loading)");
+            console.log("App Loaded (Final Monitoring Style + Secure Login + Deploy URL + Search Pagination + Sorting Realisasi + Refresh Loading + Settings Fix)");
             console.log("URL Backend: " + SCRIPT_URL);
 
             const userForm = document.getElementById('user-form');
